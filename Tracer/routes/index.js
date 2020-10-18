@@ -97,6 +97,12 @@ router.post('/regTracer', async function(req, res, next) {
     })
 });
 router.post('/searchAll', async function(req, res, next) {
+    let ct = new web3.eth.Contract(ctContract.abi);
+    ct.options.address = ctAddress;
+    let decimal = await ct.methods.tokenDecimal(web3.utils.toChecksumAddress(req.body.tokenAddress)).call({
+        from: nowAccount
+    });
+
     let tr = new web3.eth.Contract(tracerContract.abi);
     tr.options.address = web3.utils.toChecksumAddress(req.body.tracerAddress);
     let transactionCount = await tr.methods.transactionCount().call({
@@ -109,13 +115,15 @@ router.post('/searchAll', async function(req, res, next) {
     var result = await tr.methods.token_query(req.body.indexFrom, indexTo).call({
         from: nowAccount
     });
+
     res.send({
         txn: result[0],
         from: result[1],
         to: result[2],
         quantity: result[3],
         block: result[4],
-        timeStamp: result[5]
+        timeStamp: result[5],
+        decimal: decimal
     });
 });
 router.post('/searchDateUser', async function(req, res, next) {

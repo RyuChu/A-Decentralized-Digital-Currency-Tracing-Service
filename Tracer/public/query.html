@@ -213,6 +213,7 @@
                     type: "POST",
                     cache: false,
                     data: {
+                        tokenAddress: $('#tokenList').val(),
                         tracerAddress: $('#tracerAddress').val(),
                         indexFrom: resultIndex
                     },
@@ -394,6 +395,7 @@
                     if ((new Date($('#fromDate').val()).getTime()) < (new Date($('#toDate').val()).getTime())) {
                         if ($('#from').val() != "" && $('#to').val() != "") {
                             $.post('/searchDateBoth', {
+                                tokenAddress: $('#tokenList').val(),
                                 tracerAddress: $('#tracerAddress').val(),
                                 fromDate: (new Date($('#fromDate').val()).getTime()) / 1000,
                                 toDate: (new Date($('#toDate').val()).getTime()) / 1000,
@@ -409,6 +411,7 @@
                                     type: "POST",
                                     cache: false,
                                     data: {
+                                        tokenAddress: $('#tokenList').val(),
                                         tracerAddress: $('#tracerAddress').val(),
                                         fromDate: (new Date($('#fromDate').val()).getTime()) / 1000,
                                         toDate: (new Date($('#toDate').val()).getTime()) / 1000,
@@ -429,6 +432,7 @@
                                     type: "POST",
                                     cache: false,
                                     data: {
+                                        tokenAddress: $('#tokenList').val(),
                                         tracerAddress: $('#tracerAddress').val(),
                                         fromDate: (new Date($('#fromDate').val()).getTime()) / 1000,
                                         toDate: (new Date($('#toDate').val()).getTime()) / 1000,
@@ -449,6 +453,7 @@
                                     type: "POST",
                                     cache: false,
                                     data: {
+                                        tokenAddress: $('#tokenList').val(),
                                         tracerAddress: $('#tracerAddress').val(),
                                         fromDate: (new Date($('#fromDate').val()).getTime()) / 1000,
                                         toDate: (new Date($('#toDate').val()).getTime()) / 1000,
@@ -468,6 +473,7 @@
                     if ($('#fromBlock').val() < $('#toBlock').val()) {
                         if ($('#from').val() != "" && $('#to').val() != "") {
                             $.post('/searchHeightBoth', {
+                                tokenAddress: $('#tokenList').val(),
                                 tracerAddress: $('#tracerAddress').val(),
                                 fromBlock: $('#fromBlock').val(),
                                 toBlock: $('#toBlock').val(),
@@ -483,6 +489,7 @@
                                     type: "POST",
                                     cache: false,
                                     data: {
+                                        tokenAddress: $('#tokenList').val(),
                                         tracerAddress: $('#tracerAddress').val(),
                                         fromBlock: $('#fromBlock').val(),
                                         toBlock: $('#toBlock').val(),
@@ -503,6 +510,7 @@
                                     type: "POST",
                                     cache: false,
                                     data: {
+                                        tokenAddress: $('#tokenList').val(),
                                         tracerAddress: $('#tracerAddress').val(),
                                         fromBlock: $('#fromBlock').val(),
                                         toBlock: $('#toBlock').val(),
@@ -523,6 +531,7 @@
                                     type: "POST",
                                     cache: false,
                                     data: {
+                                        tokenAddress: $('#tokenList').val(),
                                         tracerAddress: $('#tracerAddress').val(),
                                         fromBlock: $('#fromBlock').val(),
                                         toBlock: $('#toBlock').val(),
@@ -546,6 +555,7 @@
                                 type: "POST",
                                 cache: false,
                                 data: {
+                                    tokenAddress: $('#tokenList').val(),
                                     tracerAddress: $('#tracerAddress').val(),
                                     account: $('#from').val(),
                                     searchType: 0,
@@ -564,6 +574,7 @@
                                 type: "POST",
                                 cache: false,
                                 data: {
+                                    tokenAddress: $('#tokenList').val(),
                                     tracerAddress: $('#tracerAddress').val(),
                                     account: $('#to').val(),
                                     searchType: 1,
@@ -577,6 +588,7 @@
                         }, 1500);
                     } else {
                         $.post('/searchBoth', {
+                            tokenAddress: $('#tokenList').val(),
                             tracerAddress: $('#tracerAddress').val(),
                             from: $('#from').val(),
                             to: $('#to').val()
@@ -592,7 +604,7 @@
             $('.section_table').show();
 
             for (var i = 0; i < result.txn.length; i++) {
-                $('.wrapper').append(`<article class="_row result"><ul><li class="content">${result.txn[i]}</li><li>${result.block[i]}</li><li>${timeStamp2String(result.timeStamp[i])}</li><li>${result.from[i]}</li><li>${result.to[i]}</li><li>${result.quantity[i]}</li></ul><ul class="more-content"><li>Transaction Hash: ${result.txn[i]}<br>Block Number: ${result.block[i]}<br>Time: ${timeStamp2String(result.timeStamp[i])}<br>From: ${result.from[i]}<br>To: ${result.to[i]}<br>Quantity: ${result.quantity[i]}</li></ul></article>`);
+                $('.wrapper').append(`<article class="_row result"><ul><li class="content">${result.txn[i]}</li><li>${result.block[i]}</li><li>${timeStamp2String(result.timeStamp[i])}</li><li>${result.from[i]}</li><li>${result.to[i]}</li><li>${result.quantity[i]/Math.pow(10,result.decimal)}</li></ul><ul class="more-content"><li>Transaction Hash: ${result.txn[i]}<br>Block Number: ${result.block[i]}<br>Time: ${timeStamp2String(result.timeStamp[i])}<br>From: ${result.from[i]}<br>To: ${result.to[i]}<br>Quantity: ${result.quantity[i]/Math.pow(10,result.decimal)}</li></ul></article>`);
                 resultIndex++;
             }
         }
