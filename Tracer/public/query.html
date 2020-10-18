@@ -33,17 +33,6 @@
                     <div class="row tm-banner-row" id="tm-section-search">
                         <form class="tm-search-form tm-section-pad-2">
                             <div class="form-row tm-search-form-row">
-                                <!-- <div class="form-group tm-form-group tm-form-group-pad tm-form-group-1">
-                                    <label>Choose Your Query Method</label>
-                                    <select class="form-control tm-select" id="method">
-                                        <option selected value="0">
-                                            Query by Time Duration
-                                        </option>
-                                        <option value="1">
-                                            Query by Block Height
-                                        </option>
-                                    </select>
-                                </div> -->
                                 <div class="form-group tm-form-group tm-form-group-1">
                                     <div class="form-group tm-form-group tm-form-group-pad tm-form-group-2">
                                         <label class="label-group-2">ERC-20 Tokens</label> <select class="form-control tm-select" id="tokenList">
@@ -55,14 +44,6 @@
                                 </div>
                             </div>
                             <div class="form-row tm-search-form-row">
-                                <!-- <div class="form-group tm-form-group tm-form-group-pad tm-form-group-3">
-                                    <label id="searchLabel1">Query from Date</label> <input class="form-control" id="searchFromDate" placeholder="Start Date" type="text"> <input class="form-control" id="searchFromHeight" placeholder="Start Block Height" type="number">
-                                    <label>Sender</label> <input class="form-control" id="searchForSender" placeholder="Sender Address" type="text">
-                                </div>
-                                <div class="form-group tm-form-group tm-form-group-pad tm-form-group-3">
-                                    <label id="searchLabel2">Query to Date</label> <input class="form-control" id="searchToDate" placeholder="End Date" type="text"> <input class="form-control" id="searchToHeight" placeholder="End Block Height" type="number">
-                                    <label>Receiver</label> <input class="form-control" id="searchForReceiver" placeholder="Receiver Address" type="text">
-                                </div> -->
                                 <div class="form-group tm-form-group tm-form-group-pad tm-form-group-3">
                                     <label class="label-group-3">Sync Block Height</label> <input class="form-control" id="syncBlock" type="text" readonly>
                                 </div>
@@ -72,9 +53,6 @@
                                 <div class="form-group tm-form-group tm-form-group-pad tm-form-group-3">
                                     <label class="label-group-3">Sync Status</label> <input class="form-control" id="oraclizeStatus" type="text" readonly>
                                 </div>
-                                <!-- <div class="form-group tm-form-group tm-form-group-pad tm-form-group-3">
-                                    <label>&nbsp;</label> <button class="btn btn-primary tm-btn tm-btn-search text-uppercase" type="button" id="searchButton">Show all Txn</button>
-                                </div> -->
                             </div>
                         </form>
                         <div class="form-group tm-form-group tm-form-group-pad tm-form-group-3 btn-query">
@@ -401,7 +379,7 @@
         var checkPoint = 0;
 
         function filterButton() {
-            // $('.result').remove();
+            $('.result').remove();
             $('.section_table').hide();
 
             clearInterval(repeatQuery);
@@ -562,23 +540,39 @@
                     }
                 } else if ($('#from').val() != "" || $('#to').val() != "") {
                     if ($('#from').val() != "") {
-                        $.post('/searchSender', {
-                            tracerAddress: $('#tracerAddress').val(),
-                            from: $('#from').val(),
-                            checkPoint: checkPoint
-                        }, function(result) {
-                            display(result);
-                            checkPoint = result.checkPoint;
-                        })
+                        repeatQuery = setInterval(function() {
+                            $.ajax({
+                                url: "searchSender",
+                                type: "POST",
+                                cache: false,
+                                data: {
+                                    tracerAddress: $('#tracerAddress').val(),
+                                    from: $('#from').val(),
+                                    checkPoint: checkPoint
+                                },
+                                success: function(result) {
+                                    display(result);
+                                    checkPoint = result.checkPoint;
+                                }
+                            });
+                        }, 1500);
                     } else if ($('#to').val() != "") {
-                        $.post('/searchReceiver', {
-                            tracerAddress: $('#tracerAddress').val(),
-                            to: $('#to').val(),
-                            checkPoint: checkPoint
-                        }, function(result) {
-                            display(result);
-                            checkPoint = result.checkPoint;
-                        })
+                        repeatQuery = setInterval(function() {
+                            $.ajax({
+                                url: "searchReceiver",
+                                type: "POST",
+                                cache: false,
+                                data: {
+                                    tracerAddress: $('#tracerAddress').val(),
+                                    to: $('#to').val(),
+                                    checkPoint: checkPoint
+                                },
+                                success: function(result) {
+                                    display(result);
+                                    checkPoint = result.checkPoint;
+                                }
+                            });
+                        }, 1500);
                     } else {
                         $.post('/searchBoth', {
                             tracerAddress: $('#tracerAddress').val(),
@@ -591,179 +585,6 @@
                 }
             }
         }
-
-        // var checkPoint = 0;
-        // $('#searchButton').click(function() {
-        //     $('.result').remove();
-        //     $('.section_table').hide();
-
-        //     clearInterval(repeatQuery);
-        //     repeatQuery = null;
-        //     resultIndex = 1;
-
-        //     checkPoint = 0;
-        //     if ($('#method').val() == 0) {
-        //         if ($('#searchFromDate').val().length < 10 || $('#searchToDate').val().length < 10) {
-        //             alert('Error! 請輸入正確的時間日期')
-        //         } else {
-        //             if ($('#searchFromDate').val() != "" && $('#searchToDate').val() != "") {
-        //                 if ((new Date($('#searchFromDate').val()).getTime()) < (new Date($('#searchToDate').val()).getTime())) {
-        //                     if ($('#searchForSender').val() != "" && $('#searchForReceiver').val() != "") {
-        //                         $.post('/searchDateBoth', {
-        //                             tracerAddress: $('#tracerAddress').val(),
-        //                             searchFromDate: (new Date($('#searchFromDate').val()).getTime()) / 1000,
-        //                             searchToDate: (new Date($('#searchToDate').val()).getTime()) / 1000,
-        //                             fromUser: $('#searchForSender').val(),
-        //                             toUser: $('#searchForReceiver').val()
-        //                         }, function(result) {
-        //                             display(result);
-        //                         })
-        //                     } else if ($('#searchForSender').val() != "") {
-        //                         repeatQuery = setInterval(function() {
-        //                             $.ajax({
-        //                                 url: "searchDateUser",
-        //                                 type: "POST",
-        //                                 cache: false,
-        //                                 data: {
-        //                                     tracerAddress: $('#tracerAddress').val(),
-        //                                     searchFromDate: (new Date($('#searchFromDate').val()).getTime()) / 1000,
-        //                                     searchToDate: (new Date($('#searchToDate').val()).getTime()) / 1000,
-        //                                     user: $('#searchForSender').val(),
-        //                                     searchType: 0,
-        //                                     checkPoint: checkPoint
-        //                                 },
-        //                                 success: function(result) {
-        //                                     display(result);
-        //                                     checkPoint = result.checkPoint;
-        //                                 }
-        //                             });
-        //                         }, 1500);
-        //                     } else if ($('#searchForReceiver').val() != "") {
-        //                         repeatQuery = setInterval(function() {
-        //                             $.ajax({
-        //                                 url: "searchDateUser",
-        //                                 type: "POST",
-        //                                 cache: false,
-        //                                 data: {
-        //                                     tracerAddress: $('#tracerAddress').val(),
-        //                                     searchFromDate: (new Date($('#searchFromDate').val()).getTime()) / 1000,
-        //                                     searchToDate: (new Date($('#searchToDate').val()).getTime()) / 1000,
-        //                                     user: $('#searchForSender').val(),
-        //                                     searchType: 1,
-        //                                     checkPoint: checkPoint
-        //                                 },
-        //                                 success: function(result) {
-        //                                     display(result);
-        //                                     checkPoint = result.checkPoint;
-        //                                 }
-        //                             });
-        //                         }, 1500);
-        //                     } else {
-        //                         repeatQuery = setInterval(function() {
-        //                             $.ajax({
-        //                                 url: "searchDate",
-        //                                 type: "POST",
-        //                                 cache: false,
-        //                                 data: {
-        //                                     tracerAddress: $('#tracerAddress').val(),
-        //                                     searchFromDate: (new Date($('#searchFromDate').val()).getTime()) / 1000,
-        //                                     searchToDate: (new Date($('#searchToDate').val()).getTime()) / 1000,
-        //                                     checkPoint: checkPoint
-        //                                 },
-        //                                 success: function(result) {
-        //                                     display(result);
-        //                                     checkPoint = result.checkPoint;
-        //                                 }
-        //                             });
-        //                         }, 1500);
-        //                     }
-        //                 } else {
-        //                     alert('Error! 請輸入正確之時間範圍');
-        //                 }
-        //             } else {
-        //                 alert('Error! 請輸入欲搜索之時間範圍');
-        //             }
-        //         }
-        //     } else {
-        //         if ($('#searchFromHeight').val() != "" && $('#searchToHeight').val() != "") {
-        //             if ($('#searchFromHeight').val() < $('#searchToHeight').val()) {
-        //                 if ($('#searchForSender').val() != "" && $('#searchForReceiver').val() != "") {
-        //                     $.post('/searchHeightBoth', {
-        //                         tracerAddress: $('#tracerAddress').val(),
-        //                         searchFromHeight: $('#searchFromHeight').val(),
-        //                         searchToHeight: $('#searchToHeight').val(),
-        //                         fromUser: $('#searchForSender').val(),
-        //                         toUser: $('#searchForReceiver').val()
-        //                     }, function(result) {
-        //                         display(result);
-        //                     })
-        //                 } else if ($('#searchForSender').val() != "") {
-        //                     repeatQuery = setInterval(function() {
-        //                         $.ajax({
-        //                             url: "searchHeightUser",
-        //                             type: "POST",
-        //                             cache: false,
-        //                             data: {
-        //                                 tracerAddress: $('#tracerAddress').val(),
-        //                                 searchFromHeight: $('#searchFromHeight').val(),
-        //                                 searchToHeight: $('#searchToHeight').val(),
-        //                                 user: $('#searchForSender').val(),
-        //                                 searchType: 0,
-        //                                 checkPoint: checkPoint
-        //                             },
-        //                             success: function(result) {
-        //                                 display(result);
-        //                                 checkPoint = result.checkPoint;
-        //                             }
-        //                         });
-        //                     }, 1500);
-        //                 } else if ($('#searchForReceiver').val() != "") {
-        //                     repeatQuery = setInterval(function() {
-        //                         $.ajax({
-        //                             url: "searchHeightUser",
-        //                             type: "POST",
-        //                             cache: false,
-        //                             data: {
-        //                                 tracerAddress: $('#tracerAddress').val(),
-        //                                 searchFromHeight: $('#searchFromHeight').val(),
-        //                                 searchToHeight: $('#searchToHeight').val(),
-        //                                 user: $('#searchForSender').val(),
-        //                                 searchType: 1,
-        //                                 checkPoint: checkPoint
-        //                             },
-        //                             success: function(result) {
-        //                                 display(result);
-        //                                 checkPoint = result.checkPoint;
-        //                             }
-        //                         });
-        //                     }, 1500);
-        //                 } else {
-        //                     repeatQuery = setInterval(function() {
-        //                         $.ajax({
-        //                             url: "searchHeight",
-        //                             type: "POST",
-        //                             cache: false,
-        //                             data: {
-        //                                 tracerAddress: $('#tracerAddress').val(),
-        //                                 searchFromHeight: $('#searchFromHeight').val(),
-        //                                 searchToHeight: $('#searchToHeight').val(),
-        //                                 checkPoint: checkPoint
-        //                             },
-        //                             success: function(result) {
-        //                                 display(result);
-        //                                 checkPoint = result.checkPoint;
-        //                             }
-        //                         });
-        //                     }, 1500);
-        //                 }
-        //             } else {
-        //                 alert('Error! 請輸入正確之區塊範圍');
-        //             }
-        //         } else {
-        //             alert('Error! 請輸入欲搜索之區塊範圍');
-        //         }
-        //     }
-        // })
 
         function display(result) {
             $('.section_table').show();
@@ -779,7 +600,6 @@
             ts.setTime(time * 1000);
             return ts.toString();
         }
-
     });
     </script>
 </body>
