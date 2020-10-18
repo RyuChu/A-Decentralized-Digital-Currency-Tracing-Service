@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Ethereum Token Tracer</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="stylesheets/regToken/vendor/bootstrap/css/bootstrap.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="stylesheets/regToken/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="stylesheets/regToken/fonts/Linearicons-Free-v1.0.0/icon-font.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="stylesheets/regToken/vendor/animate/animate.css">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="stylesheets/regToken/vendor/css-hamburgers/hamburgers.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="stylesheets/regToken/vendor/animsition/css/animsition.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="stylesheets/regToken/vendor/select2/select2.min.css">
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" href="stylesheets/regToken/vendor/daterangepicker/daterangepicker.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="stylesheets/regToken/css/util.css">
+	<link rel="stylesheet" type="text/css" href="stylesheets/regToken/css/main.css">
+<!--===============================================================================================-->
+</head>
+<body>
+	
+	<div class="limiter">
+		<div class="container-login100" style="background-image: url('stylesheets/regToken/images/bg-01.jpg');">
+			<div class="wrap-login100 p-t-30 p-b-50">
+				<span class="login100-form-title p-b-41">
+					Token Register
+				</span>
+				<form class="login100-form validate-form p-b-33 p-t-5">
+
+					<div class="wrap-input100 validate-input">
+						<input class="input100" type="text" id="tokenAddress" placeholder="Token address">
+						<span class="focus-input100" data-placeholder="&#xe82a;"></span>
+					</div>
+
+					<div class="wrap-input100 validate-input">
+						<input class="input100" type="text" id="tokenName" placeholder="Token name(optional)">
+						<span class="focus-input100" data-placeholder="&#xe80f;"></span>
+					</div>
+
+					<div class="wrap-input100 validate-input">
+						<input class="input100" type="number" min="0" id="tokenDecimal" placeholder="Token decimals(optional)">
+						<span class="focus-input100" data-placeholder="&#xe80f;"></span>
+					</div>
+
+					<div class="container-login100-form-btn m-t-32">
+						<button class="login100-form-btn" id="regButton">
+							Register
+						</button>
+					</div>
+
+				</form>
+			</div>
+		</div>
+	</div>
+	
+
+	<div id="dropDownSelect1"></div>
+	
+<!--===============================================================================================-->
+	<script src="stylesheets/regToken/vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+	<script src="stylesheets/regToken/vendor/animsition/js/animsition.min.js"></script>
+<!--===============================================================================================-->
+	<script src="stylesheets/regToken/vendor/bootstrap/js/popper.js"></script>
+	<script src="stylesheets/regToken/vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+	<script src="stylesheets/regToken/vendor/select2/select2.min.js"></script>
+<!--===============================================================================================-->
+	<script src="stylesheets/regToken/vendor/daterangepicker/moment.min.js"></script>
+	<script src="stylesheets/regToken/vendor/daterangepicker/daterangepicker.js"></script>
+<!--===============================================================================================-->
+	<script src="stylesheets/regToken/vendor/countdowntime/countdowntime.js"></script>
+	<script>
+    $(function() {
+
+        $('#regButton').click(function() {
+            if ($('#tokenAddress').val()) {
+                $('#regButton').attr('disabled', 'disabled');
+                $('#regButton').text('Waiting ...');
+                
+                var _tokenName, _tokenDecimal;
+                if (!$('#tokenName').val()) {
+                	_tokenName = '';
+                } else {
+                	_tokenName = $('#tokenName').val();
+                }
+                if (!$('#tokenDecimal').val()) {
+                	_tokenDecimal = 0;
+                } else {
+                	_tokenDecimal = $('#tokenDecimal').val();
+                }
+
+                $.post('/regTracer', {
+                    tokenAddress: $('#tokenAddress').val(),
+                    tokenName: _tokenName,
+                    tokenDecimal: _tokenDecimal
+                }, function(result) {
+                    if (result.receipt) {
+                        alert('Starting to sync Txn！ Token Tracer: ' + result.tracer);
+                        window.location.href = 'query.html';
+                    } else {
+                        alert('Fail！');
+                    }
+                })
+            } else {
+                alert('Token Address cannot be NULL');
+            }
+            window.location.href = 'query.html';
+        });
+    });
+    </script>
+</body>
+</html>

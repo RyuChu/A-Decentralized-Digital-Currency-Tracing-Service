@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Ethereum Token Tracer</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="stylesheets/altToken/vendor/bootstrap/css/bootstrap.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="stylesheets/altToken/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="stylesheets/altToken/fonts/iconic/css/material-design-iconic-font.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="stylesheets/altToken/vendor/animate/animate.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="stylesheets/altToken/vendor/css-hamburgers/hamburgers.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="stylesheets/altToken/vendor/animsition/css/animsition.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="stylesheets/altToken/vendor/select2/select2.min.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="stylesheets/altToken/vendor/daterangepicker/daterangepicker.css">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="stylesheets/altToken/css/util.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/altToken/css/main.css">
+    <!--===============================================================================================-->
+</head>
+
+<body>
+    <div class="limiter">
+        <div class="container-login100">
+            <div class="wrap-login100">
+                <form class="login100-form validate-form">
+                    <span class="login100-form-title p-b-26">
+                        Token Tracer
+                    </span>
+                    <div class="wrap-input100">
+                        <label class="input100">ERC-20 Tokens</label>
+                        <select class="focus-input100 tm-select" id="tokenList"></select>
+                    </div>
+                    <div class="wrap-input100 validate-input">
+                        <label class="input100" style="height: 18px;">Name</label>
+                        <input class="input100" type="text" id="tokenName">
+                        <span class="focus-input100"></span>
+                    </div>
+                    <div class="wrap-input100 validate-input">
+                        <label class="input100" style="height: 18px;">Decimal</label>
+                        <input class="input100" type="number" min="0" id="tokenDecimal">
+                        <span class="focus-input100"></span>
+                    </div>
+                    <div class="container-login100-form-btn">
+                        <div class="wrap-login100-form-btn">
+                            <div class="login100-form-bgbtn"></div>
+                            <button class="login100-form-btn" id="confirmButton">
+                                Confirm
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="dropDownSelect1"></div>
+    <!--===============================================================================================-->
+    <script src="stylesheets/altToken/vendor/jquery/jquery-3.2.1.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="stylesheets/altToken/vendor/animsition/js/animsition.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="stylesheets/altToken/vendor/bootstrap/js/popper.js"></script>
+    <script src="stylesheets/altToken/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="stylesheets/altToken/vendor/select2/select2.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="stylesheets/altToken/vendor/daterangepicker/moment.min.js"></script>
+    <script src="stylesheets/altToken/vendor/daterangepicker/daterangepicker.js"></script>
+    <!--===============================================================================================-->
+    <script src="stylesheets/altToken/vendor/countdowntime/countdowntime.js"></script>
+    <!--===============================================================================================-->
+    <script src="stylesheets/altToken/js/main.js"></script>
+    <script src="javascripts/index.js">
+    </script>
+    <script>
+    $(function() {
+        $.get('/getTokens', function(tokens) {
+            for (let token of tokens) {
+                $('#tokenList').append(`<option value="${token}">${token}</option>`);
+            }
+
+            $.post('/getTokenInfo', {
+                tokenAddress: $('#tokenList').val()
+            }, function(result) {
+                updateInfo(result);
+            })
+        })
+
+        $('#tokenList').change(function() {
+            $.post('/getTokenInfo', {
+                tokenAddress: $('#tokenList').val()
+            }, function(result) {
+                updateInfo(result);
+            })
+        })
+
+        function updateInfo(result) {
+            $('#tokenName').val(result.tokenName);
+            $('#tokenDecimal').text(result.tokenDecimal);
+        }
+
+        $('#confirmButton').click(function() {
+            var res = confirm('Are you sure for changing the token info?');
+            if (res) {
+                $('#confirmButton').attr('disabled', 'disabled');
+                $('#confirmButton').text('Waiting ...');
+
+                $.post('/alterTokenInfo', {
+                    tokenAddress: $('#tokenAddress').val(),
+                    tokenName: $('#tokenName').val(),
+                    tokenDecimal: $('#tokenDecimal').val()
+                }, function(result) {
+                    if (result.receipt) {
+                        alert('Done!');
+                        window.location.href = 'altToken.html';
+                    } else {
+                        alert('Fail!');
+                    }
+                })
+            }
+        });
+    });
+    </script>
+</body>
+
+</html>
