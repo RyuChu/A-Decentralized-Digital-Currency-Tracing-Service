@@ -49,7 +49,6 @@ contract tokenTracer is usingProvable, Parser {
     address public CT;
     uint public tracerBalance;
     uint public syncBlockHeight;
-    uint public realBlockHeight;
     uint private syncIndex;
     bool public oraclizeIsRunning;
     
@@ -136,7 +135,6 @@ contract tokenTracer is usingProvable, Parser {
                 syncBlockHeight = _blockNumber;
                 syncIndex = 0;
             } else if (_transactionHash == "") {
-                syncBlockHeight = realBlockHeight;
                 syncIndex = 0;
                 break;
             }

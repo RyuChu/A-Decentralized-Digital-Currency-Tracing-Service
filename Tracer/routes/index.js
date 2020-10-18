@@ -61,7 +61,7 @@ router.post('/getTracer', async function(req, res, next) {
     });
     let tr = new web3.eth.Contract(tracerContract.abi)
     tr.options.address = tracer
-    let tracerBlockHeight = await tr.methods.syncBlockHeight().call({
+    let syncBlock = await tr.methods.syncBlockHeight().call({
         from: nowAccount
     });
     let tracerTransactionCount = await tr.methods.transactionCount().call({
@@ -72,8 +72,8 @@ router.post('/getTracer', async function(req, res, next) {
     });
     res.send({
         tracer: tracer,
-        tracerBlockHeight: tracerBlockHeight,
-        tracerTransactionCount: tracerTransactionCount,
+        syncBlock: syncBlock,
+        syncTxnCount: syncTxnCount,
         oraclizeStatus: oraclizeStatus
     });
 });
