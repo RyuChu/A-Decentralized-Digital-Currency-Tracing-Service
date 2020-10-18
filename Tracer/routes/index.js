@@ -129,7 +129,7 @@ router.post('/searchAll', async function(req, res, next) {
 router.post('/searchDateUser', async function(req, res, next) {
     let tr = new web3.eth.Contract(tracerContract.abi);
     tr.options.address = web3.utils.toChecksumAddress(req.body.tracerAddress);
-    var result = await tr.methods.token_queryTime(req.body.searchFromDate, req.body.searchToDate, web3.utils.toChecksumAddress(req.body.user), req.body.searchType, req.body.checkPoint).call({
+    var result = await tr.methods.token_queryTime(req.body.fromDate, req.body.toDate, web3.utils.toChecksumAddress(req.body.account), req.body.searchType, req.body.checkPoint).call({
         from: nowAccount
     });
     res.send({
@@ -145,7 +145,7 @@ router.post('/searchDateUser', async function(req, res, next) {
 router.post('/searchDateBoth', async function(req, res, next) {
     let tr = new web3.eth.Contract(tracerContract.abi);
     tr.options.address = web3.utils.toChecksumAddress(req.body.tracerAddress);
-    var result = await tr.methods.token_queryTime(req.body.searchFromDate, req.body.searchToDate, web3.utils.toChecksumAddress(req.body.fromUser), web3.utils.toChecksumAddress(req.body.toUser)).call({
+    var result = await tr.methods.token_queryTime(req.body.fromDate, req.body.toDate, web3.utils.toChecksumAddress(req.body.from), web3.utils.toChecksumAddress(req.body.to)).call({
         from: nowAccount
     });
     res.send({
@@ -160,7 +160,7 @@ router.post('/searchDateBoth', async function(req, res, next) {
 router.post('/searchDate', async function(req, res, next) {
     let tr = new web3.eth.Contract(tracerContract.abi);
     tr.options.address = web3.utils.toChecksumAddress(req.body.tracerAddress);
-    var result = await tr.methods.token_queryTime(req.body.searchFromDate, req.body.searchToDate, req.body.checkPoint).call({
+    var result = await tr.methods.token_queryTime(req.body.fromDate, req.body.toDate, req.body.checkPoint).call({
         from: nowAccount
     });
     res.send({
@@ -176,7 +176,7 @@ router.post('/searchDate', async function(req, res, next) {
 router.post('/searchHeightUser', async function(req, res, next) {
     let tr = new web3.eth.Contract(tracerContract.abi);
     tr.options.address = web3.utils.toChecksumAddress(req.body.tracerAddress);
-    var result = await tr.methods.token_queryBlock(req.body.searchFromHeight, req.body.searchToHeight, web3.utils.toChecksumAddress(req.body.user), req.body.searchType, req.body.checkPoint).call({
+    var result = await tr.methods.token_queryBlock(req.body.fromBlock, req.body.toBlock, web3.utils.toChecksumAddress(req.body.account), req.body.searchType, req.body.checkPoint).call({
         from: nowAccount
     });
     res.send({
@@ -192,7 +192,7 @@ router.post('/searchHeightUser', async function(req, res, next) {
 router.post('/searchHeightBoth', async function(req, res, next) {
     let tr = new web3.eth.Contract(tracerContract.abi);
     tr.options.address = web3.utils.toChecksumAddress(req.body.tracerAddress);
-    var result = await tr.methods.token_queryBlock(req.body.searchFromHeight, req.body.searchToHeight, web3.utils.toChecksumAddress(req.body.fromUser), web3.utils.toChecksumAddress(req.body.toUser)).call({
+    var result = await tr.methods.token_queryBlock(req.body.fromBlock, req.body.toBlock, web3.utils.toChecksumAddress(req.body.from), web3.utils.toChecksumAddress(req.body.to)).call({
         from: nowAccount
     });
     res.send({
@@ -207,7 +207,7 @@ router.post('/searchHeightBoth', async function(req, res, next) {
 router.post('/searchHeight', async function(req, res, next) {
     let tr = new web3.eth.Contract(tracerContract.abi);
     tr.options.address = web3.utils.toChecksumAddress(req.body.tracerAddress);
-    var result = await tr.methods.token_queryBlock(req.body.searchFromHeight, req.body.searchToHeight, req.body.checkPoint).call({
+    var result = await tr.methods.token_queryBlock(req.body.fromBlock, req.body.toBlock, req.body.checkPoint).call({
         from: nowAccount
     });
     res.send({
@@ -239,7 +239,7 @@ router.post('/searchAccount', async function(req, res, next) {
 router.post('/searchBoth', async function(req, res, next) {
     let tr = new web3.eth.Contract(tracerContract.abi);
     tr.options.address = web3.utils.toChecksumAddress(req.body.tracerAddress);
-    var result = await tr.methods.token_queryAccount(req.body.from, req.body.to).call({
+    var result = await tr.methods.token_queryAccount(web3.utils.toChecksumAddress(req.body.from), web3.utils.toChecksumAddress(req.body.to)).call({
         from: nowAccount
     });
     res.send({
