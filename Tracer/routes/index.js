@@ -126,11 +126,11 @@ router.post('/searchDateUser', async function(req, res, next) {
     });
     res.send({
         checkPoint: result[0],
-        transactionHash: result[1],
-        sender: result[2],
-        receiver: result[3],
-        value: result[4],
-        blockNumber: result[5],
+        txn: result[1],
+        from: result[2],
+        to: result[3],
+        quantity: result[4],
+        block: result[5],
         timeStamp: result[6]
     });
 });
@@ -141,11 +141,11 @@ router.post('/searchDateBoth', async function(req, res, next) {
         from: nowAccount
     });
     res.send({
-        transactionHash: result[0],
-        sender: result[1],
-        receiver: result[2],
-        value: result[3],
-        blockNumber: result[4],
+        txn: result[0],
+        from: result[1],
+        to: result[2],
+        quantity: result[3],
+        block: result[4],
         timeStamp: result[5]
     });
 });
@@ -157,11 +157,11 @@ router.post('/searchDate', async function(req, res, next) {
     });
     res.send({
         checkPoint: result[0],
-        transactionHash: result[1],
-        sender: result[2],
-        receiver: result[3],
-        value: result[4],
-        blockNumber: result[5],
+        txn: result[1],
+        from: result[2],
+        to: result[3],
+        quantity: result[4],
+        block: result[5],
         timeStamp: result[6]
     });
 });
@@ -173,11 +173,11 @@ router.post('/searchHeightUser', async function(req, res, next) {
     });
     res.send({
         checkPoint: result[0],
-        transactionHash: result[1],
-        sender: result[2],
-        receiver: result[3],
-        value: result[4],
-        blockNumber: result[5],
+        txn: result[1],
+        from: result[2],
+        to: result[3],
+        quantity: result[4],
+        block: result[5],
         timeStamp: result[6]
     });
 });
@@ -188,11 +188,11 @@ router.post('/searchHeightBoth', async function(req, res, next) {
         from: nowAccount
     });
     res.send({
-        transactionHash: result[0],
-        sender: result[1],
-        receiver: result[2],
-        value: result[3],
-        blockNumber: result[4],
+        txn: result[0],
+        from: result[1],
+        to: result[2],
+        quantity: result[3],
+        block: result[4],
         timeStamp: result[5]
     });
 });
@@ -204,27 +204,27 @@ router.post('/searchHeight', async function(req, res, next) {
     });
     res.send({
         checkPoint: result[0],
-        transactionHash: result[1],
-        sender: result[2],
-        receiver: result[3],
-        value: result[4],
-        blockNumber: result[5],
+        txn: result[1],
+        from: result[2],
+        to: result[3],
+        quantity: result[4],
+        block: result[5],
         timeStamp: result[6]
     });
 });
 router.post('/searchAccount', async function(req, res, next) {
     let tr = new web3.eth.Contract(tracerContract.abi);
     tr.options.address = web3.utils.toChecksumAddress(req.body.tracerAddress);
-    var result = await tr.methods.token_queryAccount(req.body.to, req.body.searchType, req.body.checkPoint).call({
+    var result = await tr.methods.token_queryAccount(web3.utils.toChecksumAddress(req.body.account), req.body.searchType, req.body.checkPoint).call({
         from: nowAccount
     });
     res.send({
         checkPoint: result[0],
-        transactionHash: result[1],
-        sender: result[2],
-        receiver: result[3],
-        value: result[4],
-        blockNumber: result[5],
+        txn: result[1],
+        from: result[2],
+        to: result[3],
+        quantity: result[4],
+        block: result[5],
         timeStamp: result[6]
     });
 });
@@ -236,11 +236,11 @@ router.post('/searchBoth', async function(req, res, next) {
     });
     res.send({
         checkPoint: result[0],
-        transactionHash: result[1],
-        sender: result[2],
-        receiver: result[3],
-        value: result[4],
-        blockNumber: result[5],
+        txn: result[1],
+        from: result[2],
+        to: result[3],
+        quantity: result[4],
+        block: result[5],
         timeStamp: result[6]
     });
 });
