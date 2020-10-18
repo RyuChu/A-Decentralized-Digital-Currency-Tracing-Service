@@ -59,6 +59,13 @@ router.post('/getTracer', async function(req, res, next) {
     let tracer = await ct.methods.tokenTracers(req.body.tokenAddress).call({
         from: nowAccount
     });
+    let tokenName = await ct.methods.tokenName(req.body.tokenAddress).call({
+        from: nowAccount
+    });
+    let tokenDecimal = await ct.methods.tokenDecimal(req.body.tokenAddress).call({
+        from: nowAccount
+    });
+    
     let tr = new web3.eth.Contract(tracerContract.abi)
     tr.options.address = tracer
     let syncBlock = await tr.methods.syncBlockHeight().call({
@@ -72,6 +79,8 @@ router.post('/getTracer', async function(req, res, next) {
     });
     res.send({
         tracer: tracer,
+        tokenName: tokenName,
+        tokenDecimal: tokenDecimal,
         syncBlock: syncBlock,
         syncTxnCount: syncTxnCount,
         oraclizeStatus: oraclizeStatus
