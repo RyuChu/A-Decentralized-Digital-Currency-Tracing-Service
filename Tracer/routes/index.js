@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Web3 = require('web3');
-const web3 = new Web3('http://localhost:8545');
+const web3 = new Web3('http://54.188.34.51:8545');
 const ctContract = require('../contract/tracerCT.json');
 const tracerContract = require('../contract/tokenTracer.json');
 const ctAddress = "0x1aB648b92cE789CfddD77bb2c7B5B70988cB6254";
@@ -127,6 +127,12 @@ router.post('/searchAll', async function(req, res, next) {
     });
 });
 router.post('/searchDateUser', async function(req, res, next) {
+    let ct = new web3.eth.Contract(ctContract.abi);
+    ct.options.address = ctAddress;
+    let decimal = await ct.methods.tokenDecimal(web3.utils.toChecksumAddress(req.body.tokenAddress)).call({
+        from: nowAccount
+    });
+
     let tr = new web3.eth.Contract(tracerContract.abi);
     tr.options.address = web3.utils.toChecksumAddress(req.body.tracerAddress);
     var result = await tr.methods.token_queryTime(req.body.fromDate, req.body.toDate, web3.utils.toChecksumAddress(req.body.account), req.body.searchType, req.body.checkPoint).call({
@@ -139,10 +145,17 @@ router.post('/searchDateUser', async function(req, res, next) {
         to: result[3],
         quantity: result[4],
         block: result[5],
-        timeStamp: result[6]
+        timeStamp: result[6],
+        decimal: decimal
     });
 });
 router.post('/searchDateBoth', async function(req, res, next) {
+    let ct = new web3.eth.Contract(ctContract.abi);
+    ct.options.address = ctAddress;
+    let decimal = await ct.methods.tokenDecimal(web3.utils.toChecksumAddress(req.body.tokenAddress)).call({
+        from: nowAccount
+    });
+
     let tr = new web3.eth.Contract(tracerContract.abi);
     tr.options.address = web3.utils.toChecksumAddress(req.body.tracerAddress);
     var result = await tr.methods.token_queryTime(req.body.fromDate, req.body.toDate, web3.utils.toChecksumAddress(req.body.from), web3.utils.toChecksumAddress(req.body.to)).call({
@@ -154,10 +167,17 @@ router.post('/searchDateBoth', async function(req, res, next) {
         to: result[2],
         quantity: result[3],
         block: result[4],
-        timeStamp: result[5]
+        timeStamp: result[5],
+        decimal: decimal
     });
 });
 router.post('/searchDate', async function(req, res, next) {
+    let ct = new web3.eth.Contract(ctContract.abi);
+    ct.options.address = ctAddress;
+    let decimal = await ct.methods.tokenDecimal(web3.utils.toChecksumAddress(req.body.tokenAddress)).call({
+        from: nowAccount
+    });
+
     let tr = new web3.eth.Contract(tracerContract.abi);
     tr.options.address = web3.utils.toChecksumAddress(req.body.tracerAddress);
     var result = await tr.methods.token_queryTime(req.body.fromDate, req.body.toDate, req.body.checkPoint).call({
@@ -170,10 +190,17 @@ router.post('/searchDate', async function(req, res, next) {
         to: result[3],
         quantity: result[4],
         block: result[5],
-        timeStamp: result[6]
+        timeStamp: result[6],
+        decimal: decimal
     });
 });
 router.post('/searchHeightUser', async function(req, res, next) {
+    let ct = new web3.eth.Contract(ctContract.abi);
+    ct.options.address = ctAddress;
+    let decimal = await ct.methods.tokenDecimal(web3.utils.toChecksumAddress(req.body.tokenAddress)).call({
+        from: nowAccount
+    });
+
     let tr = new web3.eth.Contract(tracerContract.abi);
     tr.options.address = web3.utils.toChecksumAddress(req.body.tracerAddress);
     var result = await tr.methods.token_queryBlock(req.body.fromBlock, req.body.toBlock, web3.utils.toChecksumAddress(req.body.account), req.body.searchType, req.body.checkPoint).call({
@@ -186,10 +213,17 @@ router.post('/searchHeightUser', async function(req, res, next) {
         to: result[3],
         quantity: result[4],
         block: result[5],
-        timeStamp: result[6]
+        timeStamp: result[6],
+        decimal: decimal
     });
 });
 router.post('/searchHeightBoth', async function(req, res, next) {
+    let ct = new web3.eth.Contract(ctContract.abi);
+    ct.options.address = ctAddress;
+    let decimal = await ct.methods.tokenDecimal(web3.utils.toChecksumAddress(req.body.tokenAddress)).call({
+        from: nowAccount
+    });
+
     let tr = new web3.eth.Contract(tracerContract.abi);
     tr.options.address = web3.utils.toChecksumAddress(req.body.tracerAddress);
     var result = await tr.methods.token_queryBlock(req.body.fromBlock, req.body.toBlock, web3.utils.toChecksumAddress(req.body.from), web3.utils.toChecksumAddress(req.body.to)).call({
@@ -201,10 +235,17 @@ router.post('/searchHeightBoth', async function(req, res, next) {
         to: result[2],
         quantity: result[3],
         block: result[4],
-        timeStamp: result[5]
+        timeStamp: result[5],
+        decimal: decimal
     });
 });
 router.post('/searchHeight', async function(req, res, next) {
+    let ct = new web3.eth.Contract(ctContract.abi);
+    ct.options.address = ctAddress;
+    let decimal = await ct.methods.tokenDecimal(web3.utils.toChecksumAddress(req.body.tokenAddress)).call({
+        from: nowAccount
+    });
+
     let tr = new web3.eth.Contract(tracerContract.abi);
     tr.options.address = web3.utils.toChecksumAddress(req.body.tracerAddress);
     var result = await tr.methods.token_queryBlock(req.body.fromBlock, req.body.toBlock, req.body.checkPoint).call({
@@ -217,10 +258,17 @@ router.post('/searchHeight', async function(req, res, next) {
         to: result[3],
         quantity: result[4],
         block: result[5],
-        timeStamp: result[6]
+        timeStamp: result[6],
+        decimal: decimal
     });
 });
 router.post('/searchAccount', async function(req, res, next) {
+    let ct = new web3.eth.Contract(ctContract.abi);
+    ct.options.address = ctAddress;
+    let decimal = await ct.methods.tokenDecimal(web3.utils.toChecksumAddress(req.body.tokenAddress)).call({
+        from: nowAccount
+    });
+
     let tr = new web3.eth.Contract(tracerContract.abi);
     tr.options.address = web3.utils.toChecksumAddress(req.body.tracerAddress);
     var result = await tr.methods.token_queryAccount(web3.utils.toChecksumAddress(req.body.account), req.body.searchType, req.body.checkPoint).call({
@@ -233,23 +281,30 @@ router.post('/searchAccount', async function(req, res, next) {
         to: result[3],
         quantity: result[4],
         block: result[5],
-        timeStamp: result[6]
+        timeStamp: result[6],
+        decimal: decimal
     });
 });
 router.post('/searchBoth', async function(req, res, next) {
+    let ct = new web3.eth.Contract(ctContract.abi);
+    ct.options.address = ctAddress;
+    let decimal = await ct.methods.tokenDecimal(web3.utils.toChecksumAddress(req.body.tokenAddress)).call({
+        from: nowAccount
+    });
+
     let tr = new web3.eth.Contract(tracerContract.abi);
     tr.options.address = web3.utils.toChecksumAddress(req.body.tracerAddress);
     var result = await tr.methods.token_queryAccount(web3.utils.toChecksumAddress(req.body.from), web3.utils.toChecksumAddress(req.body.to)).call({
         from: nowAccount
     });
     res.send({
-        checkPoint: result[0],
-        txn: result[1],
-        from: result[2],
-        to: result[3],
-        quantity: result[4],
-        block: result[5],
-        timeStamp: result[6]
+        txn: result[0],
+        from: result[1],
+        to: result[2],
+        quantity: result[3],
+        block: result[4],
+        timeStamp: result[5],
+        decimal: decimal
     });
 });
 module.exports = router;
