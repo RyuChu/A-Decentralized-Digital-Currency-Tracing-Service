@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Web3 = require('web3');
-const web3 = new Web3('http://localhost:8545');
+const web3 = new Web3('http://54.188.34.51:8545');
 const ctContract = require('../contract/tracerCT.json');
 const tracerContract = require('../contract/tokenTracer.json');
 const ctAddress = "0x92a41762A95fD652fCd07a5Fc505CCc10Ad7f985";
@@ -200,6 +200,54 @@ router.post('/searchHeight', async function(req, res, next) {
     let tr = new web3.eth.Contract(tracerContract.abi);
     tr.options.address = web3.utils.toChecksumAddress(req.body.tracerAddress);
     var result = await tr.methods.token_queryBlock(req.body.searchFromHeight, req.body.searchToHeight, req.body.checkPoint).call({
+        from: nowAccount
+    });
+    res.send({
+        checkPoint: result[0],
+        transactionHash: result[1],
+        sender: result[2],
+        receiver: result[3],
+        value: result[4],
+        blockNumber: result[5],
+        timeStamp: result[6]
+    });
+});
+router.post('/searchSender', async function(req, res, next) {
+    let tr = new web3.eth.Contract(tracerContract.abi);
+    tr.options.address = web3.utils.toChecksumAddress(req.body.tracerAddress);
+    var result = await tr.methods.token_queryFrom(req.body.from, req.body.checkPoint).call({
+        from: nowAccount
+    });
+    res.send({
+        checkPoint: result[0],
+        transactionHash: result[1],
+        sender: result[2],
+        receiver: result[3],
+        value: result[4],
+        blockNumber: result[5],
+        timeStamp: result[6]
+    });
+});
+router.post('/searchReceiver', async function(req, res, next) {
+    let tr = new web3.eth.Contract(tracerContract.abi);
+    tr.options.address = web3.utils.toChecksumAddress(req.body.tracerAddress);
+    var result = await tr.methods.token_queryTo(req.body.to, req.body.checkPoint).call({
+        from: nowAccount
+    });
+    res.send({
+        checkPoint: result[0],
+        transactionHash: result[1],
+        sender: result[2],
+        receiver: result[3],
+        value: result[4],
+        blockNumber: result[5],
+        timeStamp: result[6]
+    });
+});
+router.post('/searchBoth', async function(req, res, next) {
+    let tr = new web3.eth.Contract(tracerContract.abi);
+    tr.options.address = web3.utils.toChecksumAddress(req.body.tracerAddress);
+    var result = await tr.methods.token_queryAccount(req.body.from, req.body.to).call({
         from: nowAccount
     });
     res.send({

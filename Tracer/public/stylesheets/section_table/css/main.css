@@ -76,7 +76,7 @@
     animation-fill-mode: none;*/
 }
 
-._row.ul.li:hover {
+._row:hover {
     background-color: rgba(26, 26, 26, 0.9);
     height: 180px;
     cursor: pointer;
@@ -159,12 +159,12 @@ ul.more-content li {
     display: block;
     height: 180px;
     width: 100%;
-    color: rgba(128, 128, 128, 0.9);
+    color: #FFC300;
 }
 
 @media only screen and (max-width: 767px) {
     ul.more-content li {
-        font-size: 11px;
+        font-size: 12px;
     }
 }
 

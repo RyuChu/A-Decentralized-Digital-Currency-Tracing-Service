@@ -401,7 +401,7 @@
         var checkPoint = 0;
 
         function filterButton() {
-            $('.result').remove();
+            // $('.result').remove();
             $('.section_table').hide();
 
             clearInterval(repeatQuery);
@@ -559,6 +559,34 @@
                         }
                     } else {
                         alert('Error! 請輸入正確之區塊範圍');
+                    }
+                } else if ($('#from').val() != "" || $('#to').val() != "") {
+                    if ($('#from').val() != "") {
+                        $.post('/searchSender', {
+                            tracerAddress: $('#tracerAddress').val(),
+                            from: $('#from').val(),
+                            checkPoint: checkPoint
+                        }, function(result) {
+                            display(result);
+                            checkPoint = result.checkPoint;
+                        })
+                    } else if ($('#to').val() != "") {
+                        $.post('/searchReceiver', {
+                            tracerAddress: $('#tracerAddress').val(),
+                            to: $('#to').val(),
+                            checkPoint: checkPoint
+                        }, function(result) {
+                            display(result);
+                            checkPoint = result.checkPoint;
+                        })
+                    } else {
+                        $.post('/searchBoth', {
+                            tracerAddress: $('#tracerAddress').val(),
+                            from: $('#from').val(),
+                            to: $('#to').val()
+                        }, function(result) {
+                            display(result);
+                        })
                     }
                 }
             }
@@ -741,7 +769,7 @@
             $('.section_table').show();
 
             for (var i = 0; i < result.txn.length; i++) {
-                $('.wrapper').append(`<article class="_row result"><ul><li class="content">${result.txn[i]}</li><li>${result.block[i]}</li><li>${result.timeStamp[i]}</li><li>${result.from[i]}</li><li>${result.to[i]}</li><li>${result.quantity[i]}</li></ul><ul class="more-content"><li>Transaction Hash: ${result.txn[i]}<br>Block Number: ${result.block[i]}<br>Time: ${timeStamp2String(result.timeStamp[i])}<br>From: ${result.from[i]}<br>To: ${result.to[i]}<br>Quantity: ${result.quantity[i]}</li></ul></article>`);
+                $('.wrapper').append(`<article class="_row result"><ul><li class="content">${result.txn[i]}</li><li>${result.block[i]}</li><li>${timeStamp2String(result.timeStamp[i])}</li><li>${result.from[i]}</li><li>${result.to[i]}</li><li>${result.quantity[i]}</li></ul><ul class="more-content"><li>Transaction Hash: ${result.txn[i]}<br>Block Number: ${result.block[i]}<br>Time: ${timeStamp2String(result.timeStamp[i])}<br>From: ${result.from[i]}<br>To: ${result.to[i]}<br>Quantity: ${result.quantity[i]}</li></ul></article>`);
                 resultIndex++;
             }
         }
