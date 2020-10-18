@@ -387,8 +387,8 @@ label {
     box-shadow: 0 0 0 0.1rem #69c6babf;
 }
 
-#tracerProgress,
-#tracerTransactionCount,
+#syncBlock,
+#syncTxnCount,
 #oraclizeStatus,
 #searchButton,
 #clearButton,

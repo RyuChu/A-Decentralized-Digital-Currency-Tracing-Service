@@ -188,8 +188,8 @@
 
         function updateInfo(result) {
             $('#tracerAddress').val(result.tracer);
-            $('#syncBlock').val(result.tracerBlockHeight);
-            $('#syncTxnCount').val(result.tracerTransactionCount);
+            $('#syncBlock').val(result.syncBlock);
+            $('#syncTxnCount').val(result.syncTxnCount);
             if (result.oraclizeStatus) {
                 $('#oraclizeStatus').val('Running');
                 $('#oraclizeStatus').attr('style', 'background-color: #26D07C');
