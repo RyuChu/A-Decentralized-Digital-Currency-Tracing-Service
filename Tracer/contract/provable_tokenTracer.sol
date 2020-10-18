@@ -56,9 +56,6 @@ contract tokenTracer is usingProvable, Parser {
     constructor(address _tokenContract, address _CT) public {
         tokenContract = _tokenContract;
         CT = _CT;
-        
-        // 40 GWei
-        provable_setCustomGasPrice(40000000000);
     }
     
     event LogNewOraclizeQuery(string description);
