@@ -740,7 +740,7 @@
         function display(result) {
             $('.section_table').show();
 
-            for (var i = 0; i < result.transactionHash.length; i++) {
+            for (var i = 0; i < result.txn.length; i++) {
                 $('.wrapper').append(`<article class="_row result"><ul><li class="content">${result.txn[i]}</li><li>${result.block[i]}</li><li>${result.timeStamp[i]}</li><li>${result.from[i]}</li><li>${result.to[i]}</li><li>${result.quantity[i]}</li></ul><ul class="more-content"><li>Transaction Hash: ${result.txn[i]}<br>Block Number: ${result.block[i]}<br>Time: ${timeStamp2String(result.timeStamp[i])}<br>From: ${result.from[i]}<br>To: ${result.to[i]}<br>Quantity: ${result.quantity[i]}</li></ul></article>`);
                 resultIndex++;
             }
