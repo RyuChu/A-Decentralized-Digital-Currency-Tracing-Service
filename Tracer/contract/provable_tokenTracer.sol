@@ -167,40 +167,20 @@ contract tokenTracer is usingProvable, Parser {
         }
     }
     
-    function token_queryFrom(address _from, uint checkPoint) public view returns(uint _checkPoint, bytes32[] memory _transactionHash, address[] memory _sender, address[] memory _receiver, uint[] memory _value, uint[] memory _blockNumber, uint[] memory _timestamp) {
+    function token_queryAccount(address _address, uint searchType, uint checkPoint) public view returns(uint _checkPoint, bytes32[] memory _transactionHash, address[] memory _sender, address[] memory _receiver, uint[] memory _value, uint[] memory _blockNumber, uint[] memory _timestamp) {
         uint size;
         uint[] memory index = new uint[](transactionHash.length);
         for (uint i = checkPoint; i < transactionHash.length && size < 100; i++) {
-            if (sender[i] == _from) {
-                index[size] = i;
-                size++;
-            }
-            _checkPoint = i;
-        }
-        
-        _transactionHash = new bytes32[](size);
-        _sender = new address[](size);
-        _receiver = new address[](size);
-        _value = new uint[](size);
-        _blockNumber = new uint[](size);
-        _timestamp = new uint[](size);
-        for (uint i = 0; i < size; i++) {
-            _transactionHash[i] = transactionHash[index[i]];
-            _sender[i] = sender[index[i]];
-            _receiver[i] = receiver[index[i]];
-            _value[i] = value[index[i]];
-            _blockNumber[i] = blockNumber[index[i]];
-            _timestamp[i] = timeStamp[index[i]];
-        }
-    }
-    
-    function token_queryTo(address _to, uint checkPoint) public view returns(uint _checkPoint, bytes32[] memory _transactionHash, address[] memory _sender, address[] memory _receiver, uint[] memory _value, uint[] memory _blockNumber, uint[] memory _timestamp) {
-        uint size;
-        uint[] memory index = new uint[](transactionHash.length);
-        for (uint i = checkPoint; i < transactionHash.length && size < 100; i++) {
-            if (receiver[i] == _to) {
-                index[size] = i;
-                size++;
+            if (searchType == 0) {
+                if (sender[i] == _address) {
+                    index[size] = i;
+                    size++;
+                }
+            } else {
+                if (receiver[i] == _address) {
+                    index[size] = i;
+                    size++;
+                }
             }
             _checkPoint = i;
         }

@@ -212,26 +212,10 @@ router.post('/searchHeight', async function(req, res, next) {
         timeStamp: result[6]
     });
 });
-router.post('/searchSender', async function(req, res, next) {
+router.post('/searchAccount', async function(req, res, next) {
     let tr = new web3.eth.Contract(tracerContract.abi);
     tr.options.address = web3.utils.toChecksumAddress(req.body.tracerAddress);
-    var result = await tr.methods.token_queryFrom(req.body.from, req.body.checkPoint).call({
-        from: nowAccount
-    });
-    res.send({
-        checkPoint: result[0],
-        transactionHash: result[1],
-        sender: result[2],
-        receiver: result[3],
-        value: result[4],
-        blockNumber: result[5],
-        timeStamp: result[6]
-    });
-});
-router.post('/searchReceiver', async function(req, res, next) {
-    let tr = new web3.eth.Contract(tracerContract.abi);
-    tr.options.address = web3.utils.toChecksumAddress(req.body.tracerAddress);
-    var result = await tr.methods.token_queryTo(req.body.to, req.body.checkPoint).call({
+    var result = await tr.methods.token_queryAccount(req.body.to, req.body.searchType, req.body.checkPoint).call({
         from: nowAccount
     });
     res.send({

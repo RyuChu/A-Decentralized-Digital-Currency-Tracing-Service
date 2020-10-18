@@ -542,12 +542,13 @@
                     if ($('#from').val() != "") {
                         repeatQuery = setInterval(function() {
                             $.ajax({
-                                url: "searchSender",
+                                url: "searchAccount",
                                 type: "POST",
                                 cache: false,
                                 data: {
                                     tracerAddress: $('#tracerAddress').val(),
                                     from: $('#from').val(),
+                                    searchType: 0,
                                     checkPoint: checkPoint
                                 },
                                 success: function(result) {
@@ -559,12 +560,13 @@
                     } else if ($('#to').val() != "") {
                         repeatQuery = setInterval(function() {
                             $.ajax({
-                                url: "searchReceiver",
+                                url: "searchAccount",
                                 type: "POST",
                                 cache: false,
                                 data: {
                                     tracerAddress: $('#tracerAddress').val(),
                                     to: $('#to').val(),
+                                    searchType: 1,
                                     checkPoint: checkPoint
                                 },
                                 success: function(result) {
