@@ -4,8 +4,8 @@ const Web3 = require('web3');
 const web3 = new Web3('http://localhost:8545');
 const ctContract = require('../contract/tracerCT.json');
 const tracerContract = require('../contract/tokenTracer.json');
-const ctAddress = "0xa995086850aA16A1A22A045334CF1ec92311314a";
-const nowAccount = "0xe3Cf5B41132cB261b6DA598103E74016D7844116";
+const ctAddress = "0x79dA3e2eE18128a101c04Ae5B8CeaF5eC77981f1";
+const nowAccount = "0x96100BBAAdF8BAF8C427a46F8fE7af2Ec65Ef4b3";
 /* GET home page. */
 router.get('/', async function(req, res, next) {
     res.render('index')
@@ -23,6 +23,34 @@ router.get('/getTokens', async function(req, res, next) {
         from: nowAccount
     });
     res.send(tokens)
+});
+//get token info
+router.post('/getTokenInfo', async function(req, res, next) {
+    let ct = new web3.eth.Contract(ctContract.abi);
+    ct.options.address = ctAddress;
+    let tokenName = await ct.methods.tokenName(req.body.tokenAddress).call({
+        from: nowAccount
+    });
+    let tokenDecimal = await ct.methods.tokenDecimal(req.body.tokenAddress).call({
+        from: nowAccount
+    });
+    res.send({
+        tokenName: tokenName,
+        tokenDecimal: tokenDecimal
+    });
+});
+//alter token info
+router.post('/alterTokenInfo', async function(req, res, next) {
+    let ct = new web3.eth.Contract(ctContract.abi);
+    ct.options.address = ctAddress;
+    let tokenName = await ct.methods.alterTokenInfo(req.body.tokenAddress, req.body.tokenName, req.body.tokenDecimal).send({
+        from: nowAccount,
+        gas: 20000000
+    }).on('receipt', async function(receipt) {
+        res.send(receipt: receipt);
+    }).on('error', function(error) {
+        res.send(error.toString());
+    })
 });
 //get tracer
 router.post('/getTracer', async function(req, res, next) {
@@ -53,7 +81,7 @@ router.post('/getTracer', async function(req, res, next) {
 router.post('/regTracer', async function(req, res, next) {
     let ct = new web3.eth.Contract(ctContract.abi);
     ct.options.address = ctAddress;
-    ct.methods.regTracer(web3.utils.toChecksumAddress(req.body.tokenAddress)).send({
+    ct.methods.regTracer(web3.utils.toChecksumAddress(req.body.tokenAddress), req.body.tokenName, req.body.tokenDecimal).send({
         from: nowAccount,
         gas: 20000000
     }).on('receipt', async function(receipt) {
@@ -82,11 +110,11 @@ router.post('/searchAll', async function(req, res, next) {
         from: nowAccount
     });
     res.send({
-        transactionHash: result[0],
-        sender: result[1],
-        receiver: result[2],
-        value: result[3],
-        blockNumber: result[4],
+        txn: result[0],
+        from: result[1],
+        to: result[2],
+        quantity: result[3],
+        block: result[4],
         timeStamp: result[5]
     });
 });
