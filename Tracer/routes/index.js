@@ -64,7 +64,7 @@ router.post('/getTracer', async function(req, res, next) {
     let syncBlock = await tr.methods.syncBlockHeight().call({
         from: nowAccount
     });
-    let tracerTransactionCount = await tr.methods.transactionCount().call({
+    let syncTxnCount = await tr.methods.transactionCount().call({
         from: nowAccount
     });
     let oraclizeStatus = await tr.methods.oraclizeIsRunning().call({
