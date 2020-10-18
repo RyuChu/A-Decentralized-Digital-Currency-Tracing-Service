@@ -47,7 +47,7 @@ router.post('/alterTokenInfo', async function(req, res, next) {
         from: nowAccount,
         gas: 20000000
     }).on('receipt', async function(receipt) {
-        res.send(receipt: receipt);
+        res.send(receipt);
     }).on('error', function(error) {
         res.send(error.toString());
     })
