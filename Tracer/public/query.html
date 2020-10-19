@@ -395,8 +395,9 @@
             resultIndex = 1;
 
             checkPoint = 0;
-            if ($('#toBlok').val() != "" && $('#toDate').val() != "") {
-                alert('You can only do one range query in time. Please check the query input again!')
+            if ($('#toBlok').val() == 0 && $('#toDate').val() != "") {
+                alert('You can only do one range query of block/date. Please check the query input again!')
+                clear();
             } else {
                 if ($('#fromDate').val() != "" && $('#toDate').val() != "") {
                     if ((new Date($('#fromDate').val()).getTime()) < (new Date($('#toDate').val()).getTime())) {
@@ -476,7 +477,7 @@
                     } else {
                         alert('Error! 請輸入正確之時間範圍');
                     }
-                } else if ($('#fromBlock').val() != "" && $('#toBlock').val() != "") {
+                } else if ($('#fromBlock').val() != "" && $('#toBlock').val() != 0) {
                     if ($('#fromBlock').val() < $('#toBlock').val()) {
                         if ($('#from').val() != "" && $('#to').val() != "") {
                             $.post('/searchHeightBoth', {
