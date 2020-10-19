@@ -33,11 +33,11 @@
             <div class="wrap-login100">
                 <form class="login100-form validate-form">
                     <span class="login100-form-title p-b-26">
-                        Token Tracer
+                        Change Token Info
                     </span>
                     <div class="wrap-input100">
                         <label class="input100">ERC-20 Tokens</label>
-                        <select class="focus-input100 tm-select" id="tokenList"></select>
+                        <select class="tm-select" id="tokenList"></select>
                     </div>
                     <div class="wrap-input100 validate-input">
                         <label class="input100" style="height: 18px;">Name</label>
@@ -104,7 +104,7 @@
 
         function updateInfo(result) {
             $('#tokenName').val(result.tokenName);
-            $('#tokenDecimal').text(result.tokenDecimal);
+            $('#tokenDecimal').val(result.tokenDecimal);
         }
 
         $('#confirmButton').click(function() {
