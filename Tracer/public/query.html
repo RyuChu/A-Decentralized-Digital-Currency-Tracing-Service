@@ -168,22 +168,35 @@
 
         var resultIndex = 1;
         var repeatQuery = null;
+        var repeatUpdate = null;
 
         function updateInfo(result) {
-            $('#tracerAddress').val(result.tracer);
-            $('#tokenName').val(result.tokenName);
-            $('#tokenDecimal').val(result.tokenDecimal);
-            $('#syncBlock').val(result.syncBlock);
-            $('#syncTxnCount').val(result.syncTxnCount);
-            if (result.oraclizeStatus) {
-                $('#oraclizeStatus').val('Running');
-                $('#oraclizeStatus').attr('style', 'background-color: #26D07C');
-            } else {
-                $('#oraclizeStatus').val('Pause');
-                $('#oraclizeStatus').attr('style', 'background-color: #E73C3E');
-            }
-
             clear();
+
+            repeatUpdate = setInterval(function() {
+                $.ajax({
+                    url: "getTracer",
+                    type: "POST",
+                    cache: false,
+                    data: {
+                        tokenAddress: $('#tokenList').val()
+                    },
+                    success: function(result) {
+                        $('#tracerAddress').val(result.tracer);
+                        $('#tokenName').val(result.tokenName);
+                        $('#tokenDecimal').val(result.tokenDecimal);
+                        $('#syncBlock').val(result.syncBlock);
+                        $('#syncTxnCount').val(result.syncTxnCount);
+                        if (result.oraclizeStatus) {
+                            $('#oraclizeStatus').val('Running');
+                            $('#oraclizeStatus').attr('style', 'background-color: #26D07C');
+                        } else {
+                            $('#oraclizeStatus').val('Pause');
+                            $('#oraclizeStatus').attr('style', 'background-color: #E73C3E');
+                        }
+                    }
+                });
+            }, 5000);
         }
 
         $('#clearButton').click(function() {
