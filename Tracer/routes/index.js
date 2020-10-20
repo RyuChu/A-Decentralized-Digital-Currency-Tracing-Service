@@ -4,8 +4,8 @@ const Web3 = require('web3');
 const web3 = new Web3('http://localhost:8545');
 const ctContract = require('../contract/tracerCT.json');
 const tracerContract = require('../contract/tokenTracer.json');
-const ctAddress = "0x17b91A1a2B9ebbE2d7892A5dB34545BD56863E5c";
-const nowAccount = "0x7196EbC2937234E4D4C0f0e988b31530452C7604";
+const ctAddress = "0xCac06f21b1D1520F1cD929AEE54D1f5625fe185c";
+const nowAccount = "0xa206269e1Bc48e0245A1f1823fa84EBA957A7e8d";
 /* GET home page. */
 router.get('/', async function(req, res, next) {
     res.render('index')
