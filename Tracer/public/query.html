@@ -139,7 +139,7 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css" />
     <script>
     $(function() {
-        // $('.section_table').hide();
+        $('.section_table').hide();
 
         // Smooth scroll to search form
         $('.tm-down-arrow-link').click(function() {
@@ -285,7 +285,7 @@
 
         // Date Picker in Search form
         var pickerFrom = datepicker('#fromDate');
-        var pickerFrom = datepicker('#toDate');
+        var pickerTo = datepicker('#toDate');
         $('#queryStartTime').click(function() {
             $('#date_dialog').dialog('open');
             e.preventDefault();
