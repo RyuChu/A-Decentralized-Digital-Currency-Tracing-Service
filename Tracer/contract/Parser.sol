@@ -1,6 +1,10 @@
 pragma solidity >= 0.5.0 < 0.6.0;
 
-contract Parser {
+/**
+ *  Collection of functions related to tokenTracer.
+ */
+
+library Parser {
     function parseAsciiToUint(byte char) internal pure returns(uint) {
         uint asciiNum = uint(uint8(char));
         if (asciiNum > 47 && asciiNum < 58) {

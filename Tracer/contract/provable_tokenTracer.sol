@@ -2,6 +2,7 @@ pragma solidity >= 0.5.0 < 0.6.0;
 import "./provableAPI_0.5.sol";
 import "./JsmnSolLib.sol";
 import "./Parser.sol";
+import "./Array.sol";
 
 contract tracerCT {
     address admin;
@@ -44,7 +45,7 @@ contract tracerCT {
     }
 }
 
-contract tokenTracer is usingProvable, Parser {
+contract tokenTracer is usingProvable {
     address public tokenContract;
     address public CT;
     uint public tracerBalance;
@@ -84,7 +85,7 @@ contract tokenTracer is usingProvable, Parser {
         string memory apiStr4 = "&topic0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
         string memory apiStr5 = "&apikey=HTI3IX924Z1IBXIIN4992VRAPKHJI149AX).result[";
         string memory apiStr6 = "][transactionHash, blockNumber, timeStamp, topics, data]";
-        string memory apiUrl = string(abi.encodePacked(apiStr1, uint2str(syncBlockHeight), apiStr2, apiStr3, parseAddrressToString(tokenContract), apiStr4, apiStr5, uint2str(syncIndex), ":", uint2str(syncIndex + 50), apiStr6));
+        string memory apiUrl = string(abi.encodePacked(apiStr1, uint2str(syncBlockHeight), apiStr2, apiStr3, Parser.parseAddrressToString(tokenContract), apiStr4, apiStr5, uint2str(syncIndex), ":", uint2str(syncIndex + 50), apiStr6));
         provable_query("URL", apiUrl, gasLimit);
         
         // 更新合約餘額
@@ -114,22 +115,22 @@ contract tokenTracer is usingProvable, Parser {
         // 迴圈設定每次Oraclize取得之交易筆數
         for (uint i = 0; i < 50; i++) {
             JsmnSolLib.Token memory a = tokens[1 + 8*i];
-            bytes32 _transactionHash = parseStringTo32Bytes(JsmnSolLib.getBytes(json, a.start, a.end));
+            bytes32 _transactionHash = Parser.parseStringTo32Bytes(JsmnSolLib.getBytes(json, a.start, a.end));
             // 避免重複紀錄同一筆交易
             if (!isExist[_transactionHash] && _transactionHash != "") {
                 isExist[_transactionHash] = true;
                 transactionHash.push(_transactionHash);
                 JsmnSolLib.Token memory b = tokens[2 + 8*i];
-                uint _blockNumber = parseHexToUint256(JsmnSolLib.getBytes(json, b.start, b.end));
+                uint _blockNumber = Parser.parseHexToUint256(JsmnSolLib.getBytes(json, b.start, b.end));
                 blockNumber.push(_blockNumber);
                 JsmnSolLib.Token memory c = tokens[3 + 8*i];
-                timeStamp.push(parseHexToUint256(JsmnSolLib.getBytes(json, c.start, c.end)));
+                timeStamp.push(Parser.parseHexToUint256(JsmnSolLib.getBytes(json, c.start, c.end)));
                 JsmnSolLib.Token memory d = tokens[6 + 8*i];
-                sender.push(parseAddr(subString(JsmnSolLib.getBytes(json, d.start, d.end), 26, 66)));
+                sender.push(parseAddr(Parser.subString(JsmnSolLib.getBytes(json, d.start, d.end), 26, 66)));
                 JsmnSolLib.Token memory e = tokens[7 + 8*i];
-                receiver.push(parseAddr(subString(JsmnSolLib.getBytes(json, e.start, e.end), 26, 66)));
+                receiver.push(parseAddr(Parser.subString(JsmnSolLib.getBytes(json, e.start, e.end), 26, 66)));
                 JsmnSolLib.Token memory f = tokens[8 + 8*i];
-                value.push(parseHexToUint256(JsmnSolLib.getBytes(json, f.start, f.end)));
+                value.push(Parser.parseHexToUint256(JsmnSolLib.getBytes(json, f.start, f.end)));
                 
                 // 更新下回開始搜尋之blockNumber, 需避免同一block有多筆交易
                 syncBlockHeight = _blockNumber;
@@ -228,10 +229,14 @@ contract tokenTracer is usingProvable, Parser {
     }
     
     function token_queryTime(uint startTime, uint endTime, uint checkPoint) public view returns(uint _checkPoint, bytes32[] memory _transactionHash, address[] memory _sender, address[] memory _receiver, uint[] memory _value, uint[] memory _blockNumber, uint[] memory _timestamp) {
+        if (checkPoint == 0) {
+            checkPoint = Arrays.findUpperBound(timeStamp, startTime);
+        }
+        
         uint size;
         uint[] memory index = new uint[](transactionHash.length);
         for (uint i = checkPoint; i < transactionHash.length && size < 100; i++) {
-            if (startTime <= timeStamp[i] && endTime >= timeStamp[i]) {
+            if (endTime >= timeStamp[i]) {
                 index[size] = i;
                 size++;
             }
@@ -255,16 +260,20 @@ contract tokenTracer is usingProvable, Parser {
     }
     
     function token_queryTime(uint startTime, uint endTime, address account, uint searchType, uint checkPoint) public view returns(uint _checkPoint, bytes32[] memory _transactionHash, address[] memory _sender, address[] memory _receiver, uint[] memory _value, uint[] memory _blockNumber, uint[] memory _timestamp) {
+        if (checkPoint == 0) {
+            checkPoint = Arrays.findUpperBound(timeStamp, startTime);
+        }
+        
         uint size;
         uint[] memory index = new uint[](transactionHash.length);
         for (uint i = checkPoint; i < transactionHash.length && size < 100; i++) {
             if (searchType == 0) {
-                if (startTime <= timeStamp[i] && endTime >= timeStamp[i] && account == sender[i]) {
+                if (endTime >= timeStamp[i] && account == sender[i]) {
                     index[size] = i;
                     size++;
                 }
             } else {
-                if (startTime <= timeStamp[i] && endTime >= timeStamp[i] && account == receiver[i]) {
+                if (endTime >= timeStamp[i] && account == receiver[i]) {
                     index[size] = i;
                     size++;
                 }
@@ -289,10 +298,12 @@ contract tokenTracer is usingProvable, Parser {
     }
     
     function token_queryTime(uint startTime, uint endTime, address s, address r) public view returns(bytes32[] memory _transactionHash, address[] memory _sender, address[] memory _receiver, uint[] memory _value, uint[] memory _blockNumber, uint[] memory _timestamp) {
+        uint checkPoint = Arrays.findUpperBound(timeStamp, startTime);
+        
         uint size;
         uint[] memory index = new uint[](transactionHash.length);
-        for (uint i = 0; i < transactionHash.length; i++) {
-            if (startTime <= timeStamp[i] && endTime >= timeStamp[i] && s == sender[i] && r == receiver[i]) {
+        for (uint i = checkPoint; i < transactionHash.length; i++) {
+            if (endTime >= timeStamp[i] && s == sender[i] && r == receiver[i]) {
                 index[size] = i;
                 size++;
             }
@@ -315,10 +326,14 @@ contract tokenTracer is usingProvable, Parser {
     }
     
     function token_queryBlock(uint startBlock, uint endBlock, uint checkPoint) public view returns(uint _checkPoint, bytes32[] memory _transactionHash, address[] memory _sender, address[] memory _receiver, uint[] memory _value, uint[] memory _blockNumber, uint[] memory _timestamp) {
+        if (checkPoint == 0) {
+            checkPoint = Arrays.findUpperBound(blockNumber, startBlock);
+        }
+        
         uint size;
         uint[] memory index = new uint[](transactionHash.length);
         for (uint i = checkPoint; i < transactionHash.length && size < 100; i++) {
-            if (startBlock <= blockNumber[i] && endBlock >= blockNumber[i]) {
+            if (endBlock >= blockNumber[i]) {
                 index[size] = i;
                 size++;
             }
@@ -342,16 +357,20 @@ contract tokenTracer is usingProvable, Parser {
     }
     
     function token_queryBlock(uint startBlock, uint endBlock, address account, uint searchType, uint checkPoint) public view returns(uint _checkPoint, bytes32[] memory _transactionHash, address[] memory _sender, address[] memory _receiver, uint[] memory _value, uint[] memory _blockNumber, uint[] memory _timestamp) {
+        if (checkPoint == 0) {
+            checkPoint = Arrays.findUpperBound(blockNumber, startBlock);
+        }
+        
         uint size;
         uint[] memory index = new uint[](transactionHash.length);
         for (uint i = checkPoint; i < transactionHash.length && size < 100; i++) {
             if (searchType == 0) {
-                if (startBlock <= blockNumber[i] && endBlock >= blockNumber[i] && account == sender[i]) {
+                if (endBlock >= blockNumber[i] && account == sender[i]) {
                     index[size] = i;
                     size++;
                 }
             } else {
-                if (startBlock <= blockNumber[i] && endBlock >= blockNumber[i] && account == receiver[i]) {
+                if (endBlock >= blockNumber[i] && account == receiver[i]) {
                     index[size] = i;
                     size++;
                 }
@@ -376,10 +395,12 @@ contract tokenTracer is usingProvable, Parser {
     }
     
     function token_queryBlock(uint startBlock, uint endBlock, address s, address r) public view returns(bytes32[] memory _transactionHash, address[] memory _sender, address[] memory _receiver, uint[] memory _value, uint[] memory _blockNumber, uint[] memory _timestamp) {
+        uint checkPoint = Arrays.findUpperBound(blockNumber, startBlock);
+        
         uint size;
         uint[] memory index = new uint[](transactionHash.length);
-        for (uint i = 0; i < transactionHash.length; i++) {
-            if (startBlock <= blockNumber[i] && endBlock >= blockNumber[i] && s == sender[i] && r == receiver[i]) {
+        for (uint i = checkPoint; i < transactionHash.length; i++) {
+            if (endBlock >= blockNumber[i] && s == sender[i] && r == receiver[i]) {
                 index[size] = i;
                 size++;
             }
