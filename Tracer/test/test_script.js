@@ -2,7 +2,7 @@ const fs = require('fs');
 
 const Web3 = require('web3');
 const web3 = new Web3('http://localhost:8545');
-const tracerContract = require('../contract/tokenTracer.json');
+const tracerContract = require('./v2.json');
 let contractAddress = "0xa91fD7F63BdC89A10af6bCb7b90696592935663a";
 let account = "0xa643EB1E9080DEe4cCD10988E90960D4C58c2dCA";
 
@@ -34,7 +34,7 @@ async function searchBlock() {
 
 async function searchAll() {
     let contract = new web3.eth.Contract(tracerContract.abi);
-    contract.options.address = web3.utils.toChecksumAddress(contract);
+    contract.options.address = web3.utils.toChecksumAddress(contractAddress);
     var result = await contract.methods.token_query(checkPoint).call({
         from: account
     });

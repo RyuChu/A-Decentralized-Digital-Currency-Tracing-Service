@@ -1,6 +1,6 @@
 const Web3 = require('web3');
 const web3 = new Web3('http://localhost:8545');
-const tracerContract = require('../contract/tokenTracer.json');
+const tracerContract = require('./v2.json');
 let contractAddress = "0xa91fD7F63BdC89A10af6bCb7b90696592935663a";
 let account = "0xa643EB1E9080DEe4cCD10988E90960D4C58c2dCA";
 
@@ -37,8 +37,8 @@ async function main() {
         }
 
         let contract = new web3.eth.Contract(tracerContract.abi);
-        contract.options.address = tracer;
-        tr.methods.savingTx(_txns, _froms, _tos, 20, _blocks, _times).send({
+        contract.options.address = contractAddress;
+        contract.methods.savingTx(_txns, _froms, _tos, 20, _blocks, _times).send({
             from: account
         }).on('receipt', async function(receipt) {
             console.log(receipt);
