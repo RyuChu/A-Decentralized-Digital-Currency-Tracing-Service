@@ -166,7 +166,7 @@
             })
         })
 
-        var resultIndex = 1;
+        var resultIndex = 0;
         var repeatQuery = null;
         var repeatUpdate = null;
 
@@ -216,7 +216,7 @@
 
             clearInterval(repeatQuery);
             repeatQuery = null;
-            resultIndex = 1;
+            resultIndex = 0;
         }
 
         $('#searchButton').click(function() {
@@ -225,7 +225,7 @@
 
             clearInterval(repeatQuery);
             repeatQuery = null;
-            resultIndex = 1;
+            resultIndex = 0;
 
             repeatQuery = setInterval(function() {
                 $.ajax({
@@ -235,7 +235,7 @@
                     data: {
                         tokenAddress: $('#tokenList').val(),
                         tracerAddress: $('#tracerAddress').val(),
-                        indexFrom: resultIndex
+                        index: resultIndex
                     },
                     success: function(result) {
                         display(result);
@@ -405,7 +405,7 @@
 
             clearInterval(repeatQuery);
             repeatQuery = null;
-            resultIndex = 1;
+            resultIndex = 0;
 
             checkPoint = 0;
             if ($('#toBlok').val() == 0 && $('#toDate').val() != "") {
@@ -421,9 +421,11 @@
                                 fromDate: (new Date($('#fromDate').val()).getTime()) / 1000,
                                 toDate: (new Date($('#toDate').val()).getTime()) / 1000,
                                 from: $('#from').val(),
-                                to: $('#to').val()
+                                to: $('#to').val(),
+                                checkPoint: checkPoint
                             }, function(result) {
                                 display(result);
+                                checkPoint = result.checkPoint;
                             })
                         } else if ($('#from').val() != "") {
                             repeatQuery = setInterval(function() {
@@ -499,9 +501,11 @@
                                 fromBlock: $('#fromBlock').val(),
                                 toBlock: $('#toBlock').val(),
                                 from: $('#from').val(),
-                                to: $('#to').val()
+                                to: $('#to').val(),
+                                checkPoint: checkPoint
                             }, function(result) {
                                 display(result);
+                                checkPoint = result.checkPoint;
                             })
                         } else if ($('#from').val() != "") {
                             repeatQuery = setInterval(function() {

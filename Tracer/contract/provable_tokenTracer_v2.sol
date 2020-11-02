@@ -142,8 +142,8 @@ contract tokenTracer is usingProvable {
     // 取得查詢交儲存之交易結果 (100 txns)
     function token_query(uint checkPoint) public view returns(uint _checkPoint, bytes32[] memory _transactionHash, address[] memory _sender, address[] memory _receiver, uint[] memory _value, uint[] memory _blockNumber, uint[] memory _timestamp) {
         uint count = 100;
-        if (checkPoint - 1 + 100 > transactionCount) {
-            count = transactionCount - (checkPoint - 1);
+        if (checkPoint + 100 > transactionCount) {
+            count = transactionCount - checkPoint;
         }
 
         _transactionHash = new bytes32[](count);

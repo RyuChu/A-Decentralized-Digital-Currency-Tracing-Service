@@ -117,11 +117,7 @@ router.post('/searchAll', async function(req, res, next) {
     let transactionCount = await tr.methods.transactionCount().call({
         from: nowAccount
     });
-    let indexTo = 100;
-    if ((transactionCount-req.body.indexFrom) < 100) {
-        indexTo = transactionCount - req.body.indexFrom;
-    }
-    var result = await tr.methods.token_query(req.body.indexFrom, indexTo).call({
+    var result = await tr.methods.token_query(req.body.index).call({
         from: nowAccount
     });
 
@@ -167,7 +163,7 @@ router.post('/searchDateBoth', async function(req, res, next) {
 
     let tr = new web3.eth.Contract(tracerContract.abi);
     tr.options.address = web3.utils.toChecksumAddress(req.body.tracerAddress);
-    var result = await tr.methods.token_queryTime(req.body.fromDate, req.body.toDate, web3.utils.toChecksumAddress(req.body.from), web3.utils.toChecksumAddress(req.body.to)).call({
+    var result = await tr.methods.token_queryTime(req.body.fromDate, req.body.toDate, web3.utils.toChecksumAddress(req.body.from), web3.utils.toChecksumAddress(req.body.to), req.body.checkPoint).call({
         from: nowAccount
     });
     res.send({
@@ -235,7 +231,7 @@ router.post('/searchHeightBoth', async function(req, res, next) {
 
     let tr = new web3.eth.Contract(tracerContract.abi);
     tr.options.address = web3.utils.toChecksumAddress(req.body.tracerAddress);
-    var result = await tr.methods.token_queryBlock(req.body.fromBlock, req.body.toBlock, web3.utils.toChecksumAddress(req.body.from), web3.utils.toChecksumAddress(req.body.to)).call({
+    var result = await tr.methods.token_queryBlock(req.body.fromBlock, req.body.toBlock, web3.utils.toChecksumAddress(req.body.from), web3.utils.toChecksumAddress(req.body.to), req.body.checkPoint).call({
         from: nowAccount
     });
     res.send({
