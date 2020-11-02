@@ -13,15 +13,14 @@ contract tokenTracer {
     
     mapping(bytes32 => bool) private isExist;
     
-    function savingTx(bytes32[] memory _transactionHash, address[] memory _sender, address[] memory _receiver, uint[] memory _value, uint[] memory _blockNumber, uint[] memory _timestamp) public {
-        for (uint i = 0; i < 50; i++) {
-            transactionHash.push(_transactionHash[i]);
-            sender.push(_sender[i]);
-            receiver.push(_receiver[i]);
-            value.push(_value[i]);
-            blockNumber.push(_blockNumber[i]);
-            timeStamp.push(_timestamp[i]);
-        }
+    function savingTx(bytes32 _transactionHash, address _sender, address _receiver, uint _value, uint _blockNumber, uint _timestamp) public {
+        transactionHash.push(_transactionHash);
+        sender.push(_sender);
+        receiver.push(_receiver);
+        value.push(_value);
+        blockNumber.push(_blockNumber);
+        timeStamp.push(_timestamp);
+        
         transactionCount = transactionHash.length;
     }
     

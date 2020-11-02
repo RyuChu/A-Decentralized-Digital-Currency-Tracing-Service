@@ -2,9 +2,9 @@ const fs = require('fs');
 
 const Web3 = require('web3');
 const web3 = new Web3('http://localhost:8545');
-const tracerContract = require('./v2.json');
-let contractAddress = "0xa91fD7F63BdC89A10af6bCb7b90696592935663a";
-let account = "0xa643EB1E9080DEe4cCD10988E90960D4C58c2dCA";
+const tracerContract = require('./v3.json');
+let contractAddress = "0xfE1A24b1B19C728F919D05074bcD2DD3be002f3d";
+let account = "0x7254F5a608aB44EE587Cd095223602cA35Bf2A2d";
 
 var fromBlock = '';
 var toBlock = '';
