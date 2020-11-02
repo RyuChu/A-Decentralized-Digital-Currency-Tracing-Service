@@ -167,13 +167,13 @@
         })
 
         var resultIndex = 0;
-        var repeatQuery = null;
-        var repeatUpdate = null;
+        var repeatQuery = 0;
+        var repeatUpdate = 0;
 
         function updateInfo(result) {
             clear();
 
-            repeatUpdate = setInterval(function() {
+            repeatUpdate = window.setInterval(function() {
                 $.ajax({
                     url: "getTracer",
                     type: "POST",
@@ -214,8 +214,7 @@
             $('#from').val('');
             $('#to').val('');
 
-            clearInterval(repeatQuery);
-            repeatQuery = null;
+            window.clearInterval(repeatQuery);
             resultIndex = 0;
         }
 
@@ -223,8 +222,7 @@
             $('.result').remove();
             $('.section_table').hide();
 
-            clearInterval(repeatQuery);
-            repeatQuery = null;
+            window.clearInterval(repeatQuery);
             resultIndex = 0;
 
             repeatQuery = setInterval(function() {
@@ -403,8 +401,7 @@
             $('.result').remove();
             $('.section_table').hide();
 
-            clearInterval(repeatQuery);
-            repeatQuery = null;
+            window.clearInterval(repeatQuery);
             resultIndex = 0;
 
             checkPoint = 0;
