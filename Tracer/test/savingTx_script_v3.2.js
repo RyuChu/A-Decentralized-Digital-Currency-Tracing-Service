@@ -6,15 +6,17 @@ let account = "0x7254F5a608aB44EE587Cd095223602cA35Bf2A2d";
 
 main();
 
-function main() {
-    let contract = new web3.eth.Contract(tracerContract.abi);
-    contract.options.address = contractAddress;
-    contract.methods.savingTx().send({
-        from: account,
-        gas: 1000000000
-    }).on('receipt', async function(receipt) {
-        console.log(receipt);
-    }).on('error', function(error) {
-        console.log(error);
-    })
+async function main() {
+    setInterval(async function() {
+        let contract = new web3.eth.Contract(tracerContract.abi);
+        contract.options.address = contractAddress;
+        contract.methods.savingTx().send({
+            from: account,
+            gas: 1000000000
+        }).on('receipt', async function(receipt) {
+            console.log(receipt);
+        }).on('error', function(error) {
+            console.log(error);
+        })
+    }, 3000)
 }
