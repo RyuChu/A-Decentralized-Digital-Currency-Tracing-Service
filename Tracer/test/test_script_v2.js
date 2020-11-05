@@ -7,7 +7,7 @@ let contractAddress = "0x068B815E57E4e560646dE490c2D5A8946fEd3d6F";
 let account = "0x088C4fcc372111E0513046ee9645c2Bfe99F8160";
 
 // var block = 10;
-var block = parseInt(process.argv);
+var block = Number(process.argv);
 
 var checkPoint = 0;
 
