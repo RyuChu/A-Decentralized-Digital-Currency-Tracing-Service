@@ -11,10 +11,10 @@ var block = Number(process.argv[2]);
 
 var checkPoint = 0;
 
+var hrstart = process.hrtime();
 searchBlock();
 
 async function searchBlock() {
-    var hrstart = process.hrtime();
 
     let contract = new web3.eth.Contract(tracerContract.abi, contractAddress);
     var result = await contract.methods.token_queryBlock(block, block, checkPoint).call();
