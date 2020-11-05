@@ -3,7 +3,7 @@ const fs = require('fs');
 const Web3 = require('web3');
 const web3 = new Web3('http://54.188.34.51:8545');
 const tracerContract = require('./v3-2.json');
-let contractAddress = "0x8CC79327fF94821C0eFE5b8621516e97156a5e43";
+let contractAddress = "0xb7dC3C8cB813e5D52692aAf5a2e6DD9c94fd7A64";
 let account = "0x369a5Cfbc1DfDE0FC7c82E4C6d24E459844494C9";
 
 var block = 100;

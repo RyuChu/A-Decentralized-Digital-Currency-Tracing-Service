@@ -37,6 +37,30 @@ library Arrays {
 
         // At this point `low` is the exclusive upper bound. We will return the inclusive upper bound.
         if (low > 0 && array[low - 1] == element) {
+            // return low - 1;
+            return findLowerIndex(array, element, low - 1);
+        } else {
+            // return low;
+            return findLowerIndex(array, element, low);
+        }
+    }
+    
+    // To fine the lower index of duplicate item value
+    function findLowerIndex(uint256[] storage array, uint256 element, uint256 index) internal view returns (uint256) {
+        uint256 low = 0;
+        uint256 high = index;
+        
+        while (low < high) {
+            uint256 mid = Math.average(low, high);
+
+            if (array[mid] == element) {
+                high = mid;
+            } else {
+                low = mid + 1;
+            }
+        }
+        
+        if (low > 0 && array[low - 1] == element) {
             return low - 1;
         } else {
             return low;
