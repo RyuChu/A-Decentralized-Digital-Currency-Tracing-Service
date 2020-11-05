@@ -3,10 +3,11 @@ const fs = require('fs');
 const Web3 = require('web3');
 const web3 = new Web3('http://localhost:8545');
 const tracerContract = require('./v3-2.json');
-let contractAddress = "0xb7dC3C8cB813e5D52692aAf5a2e6DD9c94fd7A64";
+let contractAddress = "0x1d578EC1dFB38A01707bB04579281aAA6B5fCe8e";
 let account = "0x369a5Cfbc1DfDE0FC7c82E4C6d24E459844494C9";
 
-var block = 10;
+// var block = 10;
+var block = process.argv;
 
 var checkPoint = 0;
 
