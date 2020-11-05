@@ -1,0 +1,35 @@
+Search block: 10
+checkPoint: 100
+Get result amount: 10
+Cost time: 39.587731ms
+
+Search block: 50
+checkPoint: 500
+Get result amount: 10
+Cost time: 73.458108ms
+
+Search block: 100
+checkPoint: 1000
+Get result amount: 10
+Cost time: 98.101949ms
+
+Search block: 500
+checkPoint: 5000
+Get result amount: 10
+Cost time: 332.76817ms
+
+Search block: 1000
+checkPoint: 10000
+Get result amount: 10
+Cost time: 603.218407ms
+
+Search block: 5000
+checkPoint: 50000
+Get result amount: 10
+Cost time: 2976.641861ms
+
+Search block: 10000
+checkPoint: 100000
+Get result amount: 10
+Cost time: 4936.149246ms
+
