@@ -7,7 +7,7 @@ let contractAddress = "0x1d578EC1dFB38A01707bB04579281aAA6B5fCe8e";
 let account = "0x369a5Cfbc1DfDE0FC7c82E4C6d24E459844494C9";
 
 // var block = 10;
-var block = process.argv;
+var block = parseInt(process.argv);
 
 var checkPoint = 0;
 
@@ -26,10 +26,10 @@ async function searchBlock() {
         console.log("checkPoint: " + result[0]);
         console.log("Cost Time: " + hrend[1] / 1000000 + "ms");
 
-        fs.appendFileSync("result_searchBlock.txt", "Search block: " + block + "\n");
-        fs.appendFileSync("result_searchBlock.txt", "checkPoint: " + result[0] + "\n");
-        fs.appendFileSync("result_searchBlock.txt", "Get result amount: " + result[1].length + "\n");
-        fs.appendFileSync("result_searchBlock.txt", "Cost time: " + hrend[1] / 1000000 + "ms" + "\n\n");
+        fs.appendFileSync("result_searchBlock_v3.txt", "Search block: " + block + "\n");
+        fs.appendFileSync("result_searchBlock_v3.txt", "checkPoint: " + result[0] + "\n");
+        fs.appendFileSync("result_searchBlock_v3.txt", "Get result amount: " + result[1].length + "\n");
+        fs.appendFileSync("result_searchBlock_v3.txt", "Cost time: " + hrend[1] / 1000000 + "ms" + "\n\n");
     } else {
         checkPoint = result[0];
         searchBlock();
