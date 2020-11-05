@@ -6,7 +6,7 @@ contract tokenTracer {
     
     // 取得已儲存之交易筆數
     uint public blockCount;
-
+    
     uint public _block = 1;
     
     function savingTx() public {
@@ -21,6 +21,29 @@ contract tokenTracer {
     }
     
     function token_queryBlock(uint startBlock, uint endBlock, uint checkPoint) public view returns(uint _checkPoint, uint[] memory _blockNumber) {
+        uint size;
+        uint[] memory matchIndex = new uint[](blockCount);
+        for (uint i = checkPoint; i < blockCount && i < checkPoint + 100; i++) {
+            _checkPoint = i;
+            
+            if (startBlock <= blockNumber[i]) {
+                if (endBlock >= blockNumber[i]) {
+                    matchIndex[size] = i;
+                    size++;
+                } else {
+                    break;
+                }
+            }
+
+        }
+
+        _blockNumber = new uint[](size);
+        for (uint i = 0; i < size; i++) {
+            _blockNumber[i] = blockNumber[matchIndex[i]];
+        } 
+    }
+    
+    function token_queryBlock_BS(uint startBlock, uint endBlock, uint checkPoint) public view returns(uint _checkPoint, uint[] memory _blockNumber) {
         uint size;
         uint[] memory matchIndex = new uint[](blockCount);
         if (checkPoint == 0) {

@@ -1,8 +1,8 @@
 const Web3 = require('web3');
 const web3 = new Web3('http://localhost:8545');
-const tracerContract = require('./v3-2.json');
-let contractAddress = "0x1d578EC1dFB38A01707bB04579281aAA6B5fCe8e";
-let account = "0x369a5Cfbc1DfDE0FC7c82E4C6d24E459844494C9";
+const tracerContract = require('./test_tokenTracer.json');
+let contractAddress = "0xb4CBd6D121684b50F6882abC8d572fb628190e4B";
+let account = "0x088C4fcc372111E0513046ee9645c2Bfe99F8160";
 
 main();
 
