@@ -28,7 +28,7 @@ async function searchBlock() {
         fs.appendFileSync("result_searchBlock_v3.txt", "Search block: " + block + "\n");
         fs.appendFileSync("result_searchBlock_v3.txt", "checkPoint: " + result[0] + "\n");
         fs.appendFileSync("result_searchBlock_v3.txt", "Get result amount: " + result[1].length + "\n");
-        fs.appendFileSync("result_searchBlock_v3.txt", "Cost time: " + hrend[1] / 1000000 + "ms" + "\n\n");
+        fs.appendFileSync("result_searchBlock_v3.txt", "Cost time: " + (hrend[0] * 1e9 + hrend[1]) / 1000000 + "ms" + "\n\n");
     } else {
         checkPoint = result[0];
         searchBlock();
