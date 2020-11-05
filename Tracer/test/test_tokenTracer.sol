@@ -23,12 +23,10 @@ contract tokenTracer {
     function token_queryBlock(uint startBlock, uint endBlock, uint checkPoint) public view returns(uint _checkPoint, uint[] memory _blockNumber) {
         uint size;
         uint[] memory matchIndex = new uint[](blockCount);
-        for (uint i = checkPoint; i < blockCount && i < checkPoint + 100; i++) {
-            _checkPoint = i;
-            
-            if (startBlock <= blockNumber[i]) {
-                if (endBlock >= blockNumber[i]) {
-                    matchIndex[size] = i;
+        for (_checkPoint = checkPoint; _checkPoint < blockCount && _checkPoint < checkPoint + 100; _checkPoint++) {
+            if (startBlock <= blockNumber[_checkPoint]) {
+                if (endBlock >= blockNumber[_checkPoint]) {
+                    matchIndex[size] = _checkPoint;
                     size++;
                 } else {
                     break;
@@ -50,11 +48,9 @@ contract tokenTracer {
             checkPoint = Arrays.findUpperBound(blockNumber, startBlock);
         }
         
-        for (uint i = checkPoint; i < blockCount && i < checkPoint + 100; i++) {
-            _checkPoint = i;
-            
-            if (endBlock >= blockNumber[i]) {
-                matchIndex[size] = i;
+        for (_checkPoint = checkPoint; _checkPoint < blockCount && _checkPoint < checkPoint + 100; _checkPoint++) {
+            if (endBlock >= blockNumber[_checkPoint]) {
+                matchIndex[size] = _checkPoint;
                 size++;
             } else {
                 break;
