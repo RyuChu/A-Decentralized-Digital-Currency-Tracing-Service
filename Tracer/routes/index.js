@@ -299,7 +299,7 @@ router.post('/searchBoth', async function(req, res, next) {
 
     let tr = new web3.eth.Contract(tracerContract.abi);
     tr.options.address = web3.utils.toChecksumAddress(req.body.tracerAddress);
-    var result = await tr.methods.token_queryAccount(web3.utils.toChecksumAddress(req.body.from), web3.utils.toChecksumAddress(req.body.to)).call({
+    var result = await tr.methods.token_queryAccount(web3.utils.toChecksumAddress(req.body.from), web3.utils.toChecksumAddress(req.body.to), req.body.checkPoint).call({
         from: nowAccount
     });
     res.send({

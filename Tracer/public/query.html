@@ -613,9 +613,11 @@
                             tokenAddress: $('#tokenList').val(),
                             tracerAddress: $('#tracerAddress').val(),
                             from: $('#from').val(),
-                            to: $('#to').val()
+                            to: $('#to').val(),
+                            checkPoint: checkPoint
                         }, function(result) {
                             display(result);
+                            checkPoint = result.checkPoint;
                         })
                     }
                 }
