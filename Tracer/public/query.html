@@ -99,8 +99,8 @@
                         <img src="stylesheets/query/img/search.png" class="search-icon" id="queryStartTime">
                         <div class="dialog" id="date_dialog">
                             <h3>Please pick up the date to query</h3>
-                            <p>fromDate : <input type="text" class="dialog_input" id="fromDate" placeholder="Default: Jul 30 2015" readonly/></p>
-                            <p>toDate : <input type="text" class="dialog_input" id="toDate" placeholder="Default: latest" readonly/></p>
+                            <p>fromDate : <input type="text" class="dialog_input" id="fromDate" placeholder="Default: Jul 30 2015" readonly /></p>
+                            <p>toDate : <input type="text" class="dialog_input" id="toDate" placeholder="Default: latest" readonly /></p>
                         </div>
                     </li>
                     <li>From
@@ -159,6 +159,8 @@
         })
 
         $('#tokenList').change(function() {
+            clear();
+
             $.post('/getTracer', {
                 tokenAddress: $('#tokenList').val()
             }, function(result) {
@@ -166,13 +168,11 @@
             })
         })
 
-        const repeatQuery = 0;
-        const repeatUpdate = 0;
+        var repeatQuery, repeatUpdate;
         var checkPoint = 0;
+        var flag = false;
 
         function updateInfo(result) {
-            clear();
-
             repeatUpdate = setInterval(function() {
                 $.ajax({
                     url: "getTracer",
@@ -214,16 +214,22 @@
             $('#from').val('');
             $('#to').val('');
 
+            $('#searchButton').prop('disabled', false);
+
             clearInterval(repeatQuery);
+            repeatQuery = 0;
             checkPoint = 0;
+            flag = false;
+
+            filter_block = false;
+            filter_time = false;
+            filter_from = false;
+            filter_to = false;
         }
 
         $('#searchButton').click(function() {
-            $('.result').remove();
-            $('.section_table').hide();
-
-            clearInterval(repeatQuery);
-            checkPoint = 0;
+            $('#searchButton').prop('disabled', true);
+            flag = false;
 
             repeatQuery = setInterval(function() {
                 $.ajax({
@@ -236,13 +242,16 @@
                         checkPoint: checkPoint
                     },
                     success: function(result) {
-                        display(result);
-                        checkPoint = result.checkPoint;
+                        if ((!flag && checkPoint == 0) || checkPoint != 0) {
+                            display(result);
+                            checkPoint = result.checkPoint;
+                        }
                     }
                 });
             }, 1500);
         })
 
+        var filter_block = false;
         $('#queryFromBlock').click(function(e) {
             $('#block_dialog').dialog('open');
             e.preventDefault();
@@ -271,8 +280,11 @@
             open: function(event, ui) {
                 $('.ui-widget-overlay').bind('click', function() {
                     $("#block_dialog").dialog('close');
-                    $('#fromBlock').val('');
-                    $('#toBlock').val('');
+
+                    if (!filter_block) {
+                        $('#fromBlock').val('');
+                        $('#toBlock').val('');
+                    }
                 });
             },
             position: {
@@ -282,6 +294,7 @@
             }
         });
 
+        var filter_time = false;
         // Date Picker in Search form
         var pickerFrom = datepicker('#fromDate');
         var pickerTo = datepicker('#toDate');
@@ -313,8 +326,11 @@
             open: function(event, ui) {
                 $('.ui-widget-overlay').bind('click', function() {
                     $("#date_dialog").dialog('close');
-                    $('#fromDate').val('');
-                    $('#toDate').val('');
+
+                    if (!filter_time) {
+                        $('#fromDate').val('');
+                        $('#toDate').val('');
+                    }
                 });
             },
             position: {
@@ -324,6 +340,7 @@
             }
         });
 
+        var filter_from = false;
         $('#querySender').click(function(e) {
             $('#from_dialog').dialog('open');
             e.preventDefault();
@@ -350,7 +367,10 @@
             open: function(event, ui) {
                 $('.ui-widget-overlay').bind('click', function() {
                     $("#from_dialog").dialog('close');
-                    $('#from').val('');
+
+                    if (!filter_from) {
+                        $('#from').val('');
+                    }
                 });
             },
             position: {
@@ -360,6 +380,7 @@
             }
         });
 
+        var filter_to = false;
         $('#queryReceiver').click(function(e) {
             $('#to_dialog').dialog('open');
             e.preventDefault();
@@ -386,7 +407,10 @@
             open: function(event, ui) {
                 $('.ui-widget-overlay').bind('click', function() {
                     $("#to_dialog").dialog('close');
-                    $('#to').val('');
+
+                    if (!filter_to) {
+                        $('#to').val('');
+                    }
                 });
             },
             position: {
@@ -397,33 +421,52 @@
         });
 
         function filterButton() {
+            clearInterval(repeatQuery);
+            repeatQuery = 0;
+            checkPoint = 0;
+            flag = true;
+
             $('.result').remove();
             $('.section_table').hide();
 
-            clearInterval(repeatQuery);
-            checkPoint = 0;
-
             if ($('#toBlok').val() == 0 && $('#toDate').val() != "") {
-                alert('You can only do one range query of block/date. Please check the query input again!')
-                clear();
+                alert('You can only do one range query of block/date. Please check the query input again!');
             } else {
                 if ($('#fromDate').val() != "" && $('#toDate').val() != "") {
                     if ((new Date($('#fromDate').val()).getTime()) < (new Date($('#toDate').val()).getTime())) {
+                        filter_time = true;
+
                         if ($('#from').val() != "" && $('#to').val() != "") {
-                            $.post('/searchDate', {
-                                tokenAddress: $('#tokenList').val(),
-                                tracerAddress: $('#tracerAddress').val(),
-                                fromDate: (new Date($('#fromDate').val()).getTime()) / 1000,
-                                toDate: (new Date($('#toDate').val()).getTime()) / 1000,
-                                from: $('#from').val(),
-                                to: $('#to').val(),
-                                searchType: 0,
-                                checkPoint: checkPoint
-                            }, function(result) {
-                                display(result);
-                                checkPoint = result.checkPoint;
-                            })
+                            filter_from = true;
+                            filter_to = true;
+
+                            repeatQuery = setInterval(function() {
+                                $.ajax({
+                                    url: "searchDate",
+                                    type: "POST",
+                                    cache: false,
+                                    data: {
+                                        tokenAddress: $('#tokenList').val(),
+                                        tracerAddress: $('#tracerAddress').val(),
+                                        fromDate: (new Date($('#fromDate').val()).getTime()) / 1000,
+                                        toDate: (new Date($('#toDate').val()).getTime()) / 1000,
+                                        from: $('#from').val(),
+                                        to: $('#to').val(),
+                                        searchType: 0,
+                                        checkPoint: checkPoint
+                                    },
+                                    success: function(result) {
+                                        if ((flag && checkPoint == 0) || checkPoint != 0) {
+                                            display(result);
+                                            checkPoint = result.checkPoint;
+                                            flag = false;
+                                        }
+                                    }
+                                });
+                            }, 1500);
                         } else if ($('#from').val() != "") {
+                            filter_from = true;
+
                             repeatQuery = setInterval(function() {
                                 $.ajax({
                                     url: "searchDate",
@@ -439,12 +482,17 @@
                                         checkPoint: checkPoint
                                     },
                                     success: function(result) {
-                                        display(result);
-                                        checkPoint = result.checkPoint;
+                                        if ((flag && checkPoint == 0) || checkPoint != 0) {
+                                            display(result);
+                                            checkPoint = result.checkPoint;
+                                            flag = false;
+                                        }
                                     }
                                 });
                             }, 1500);
                         } else if ($('#to').val() != "") {
+                            filter_to = true;
+
                             repeatQuery = setInterval(function() {
                                 $.ajax({
                                     url: "searchDate",
@@ -460,8 +508,11 @@
                                         checkPoint: checkPoint
                                     },
                                     success: function(result) {
-                                        display(result);
-                                        checkPoint = result.checkPoint;
+                                        if ((flag && checkPoint == 0) || checkPoint != 0) {
+                                            display(result);
+                                            checkPoint = result.checkPoint;
+                                            flag = false;
+                                        }
                                     }
                                 });
                             }, 1500);
@@ -480,8 +531,11 @@
                                         checkPoint: checkPoint
                                     },
                                     success: function(result) {
-                                        display(result);
-                                        checkPoint = result.checkPoint;
+                                        if ((flag && checkPoint == 0) || checkPoint != 0) {
+                                            display(result);
+                                            checkPoint = result.checkPoint;
+                                            flag = false;
+                                        }
                                     }
                                 });
                             }, 1500);
@@ -491,21 +545,39 @@
                     }
                 } else if ($('#fromBlock').val() != "" && $('#toBlock').val() != 0) {
                     if ($('#fromBlock').val() < $('#toBlock').val()) {
+                        filter_block = true;
+
                         if ($('#from').val() != "" && $('#to').val() != "") {
-                            $.post('/searchHeight', {
-                                tokenAddress: $('#tokenList').val(),
-                                tracerAddress: $('#tracerAddress').val(),
-                                fromBlock: $('#fromBlock').val(),
-                                toBlock: $('#toBlock').val(),
-                                from: $('#from').val(),
-                                to: $('#to').val(),
-                                searchType: 0,
-                                checkPoint: checkPoint
-                            }, function(result) {
-                                display(result);
-                                checkPoint = result.checkPoint;
-                            })
+                            filter_from = true;
+                            filter_to = true;
+
+                            repeatQuery = setInterval(function() {
+                                $.ajax({
+                                    url: "searchHeight",
+                                    type: "POST",
+                                    cache: false,
+                                    data: {
+                                        tokenAddress: $('#tokenList').val(),
+                                        tracerAddress: $('#tracerAddress').val(),
+                                        fromBlock: $('#fromBlock').val(),
+                                        toBlock: $('#toBlock').val(),
+                                        from: $('#from').val(),
+                                        to: $('#to').val(),
+                                        searchType: 0,
+                                        checkPoint: checkPoint
+                                    },
+                                    success: function(result) {
+                                        if ((flag && checkPoint == 0) || checkPoint != 0) {
+                                            display(result);
+                                            checkPoint = result.checkPoint;
+                                            flag = false;
+                                        }
+                                    }
+                                });
+                            }, 1500);
                         } else if ($('#from').val() != "") {
+                            filter_from = true;
+
                             repeatQuery = setInterval(function() {
                                 $.ajax({
                                     url: "searchHeight",
@@ -521,12 +593,17 @@
                                         checkPoint: checkPoint
                                     },
                                     success: function(result) {
-                                        display(result);
-                                        checkPoint = result.checkPoint;
+                                        if ((flag && checkPoint == 0) || checkPoint != 0) {
+                                            display(result);
+                                            checkPoint = result.checkPoint;
+                                            flag = false;
+                                        }
                                     }
                                 });
                             }, 1500);
                         } else if ($('#to').val() != "") {
+                            filter_to = true;
+
                             repeatQuery = setInterval(function() {
                                 $.ajax({
                                     url: "searchHeight",
@@ -542,8 +619,11 @@
                                         checkPoint: checkPoint
                                     },
                                     success: function(result) {
-                                        display(result);
-                                        checkPoint = result.checkPoint;
+                                        if ((flag && checkPoint == 0) || checkPoint != 0) {
+                                            display(result);
+                                            checkPoint = result.checkPoint;
+                                            flag = false;
+                                        }
                                     }
                                 });
                             }, 1500);
@@ -562,8 +642,11 @@
                                         checkPoint: checkPoint
                                     },
                                     success: function(result) {
-                                        display(result);
-                                        checkPoint = result.checkPoint;
+                                        if ((flag && checkPoint == 0) || checkPoint != 0) {
+                                            display(result);
+                                            checkPoint = result.checkPoint;
+                                            flag = false;
+                                        }
                                     }
                                 });
                             }, 1500);
@@ -573,6 +656,8 @@
                     }
                 } else if ($('#from').val() != "" || $('#to').val() != "") {
                     if ($('#from').val() != "") {
+                        filter_from = true;
+
                         repeatQuery = setInterval(function() {
                             $.ajax({
                                 url: "searchAccount",
@@ -586,12 +671,17 @@
                                     checkPoint: checkPoint
                                 },
                                 success: function(result) {
-                                    display(result);
-                                    checkPoint = result.checkPoint;
+                                    if ((flag && checkPoint == 0) || checkPoint != 0) {
+                                        display(result);
+                                        checkPoint = result.checkPoint;
+                                        flag = false;
+                                    }
                                 }
                             });
                         }, 1500);
                     } else if ($('#to').val() != "") {
+                        filter_to = true;
+
                         repeatQuery = setInterval(function() {
                             $.ajax({
                                 url: "searchAccount",
@@ -605,12 +695,18 @@
                                     checkPoint: checkPoint
                                 },
                                 success: function(result) {
-                                    display(result);
-                                    checkPoint = result.checkPoint;
+                                    if ((flag && checkPoint == 0) || checkPoint != 0) {
+                                        display(result);
+                                        checkPoint = result.checkPoint;
+                                        flag = false;
+                                    }
                                 }
                             });
                         }, 1500);
                     } else {
+                        filter_from = true;
+                        filter_to = true;
+
                         $.post('/searchAccount', {
                             tokenAddress: $('#tokenList').val(),
                             tracerAddress: $('#tracerAddress').val(),
@@ -619,8 +715,11 @@
                             searchType: 2,
                             checkPoint: checkPoint
                         }, function(result) {
-                            display(result);
-                            checkPoint = result.checkPoint;
+                            if ((flag && checkPoint == 0) || checkPoint != 0) {
+                                display(result);
+                                checkPoint = result.checkPoint;
+                                flag = false;
+                            }
                         })
                     }
                 }
@@ -628,10 +727,12 @@
         }
 
         function display(result) {
-            $('.section_table').show();
+            if (repeatQuery != 0) {
+                $('.section_table').show();
 
-            for (var i = 0; i < result.txn.length; i++) {
-                $('.wrapper').append(`<article class="_row result"><ul><li class="content">${result.txn[i]}</li><li>${result.block[i]}</li><li>${timeStamp2String(result.timeStamp[i])}</li><li>${result.from[i]}</li><li>${result.to[i]}</li><li>${result.quantity[i]/Math.pow(10,result.decimal)}</li></ul><ul class="more-content"><li>Transaction Hash: ${result.txn[i]}<br>Block Number: ${result.block[i]}<br>Time: ${timeStamp2String(result.timeStamp[i])}<br>From: ${result.from[i]}<br>To: ${result.to[i]}<br>Quantity: ${result.quantity[i]/Math.pow(10,result.decimal)}</li></ul></article>`);
+                for (var i = 0; i < result.txn.length; i++) {
+                    $('.wrapper').append(`<article class="_row result"><ul><li class="content">${result.txn[i]}</li><li>${result.block[i]}</li><li>${timeStamp2String(result.timeStamp[i])}</li><li>${result.from[i]}</li><li>${result.to[i]}</li><li>${result.quantity[i]/Math.pow(10,result.decimal)}</li></ul><ul class="more-content"><li>Transaction Hash: ${result.txn[i]}<br>Block Number: ${result.block[i]}<br>Time: ${timeStamp2String(result.timeStamp[i])}<br>From: ${result.from[i]}<br>To: ${result.to[i]}<br>Quantity: ${result.quantity[i]/Math.pow(10,result.decimal)}</li></ul></article>`);
+                }
             }
         }
 
