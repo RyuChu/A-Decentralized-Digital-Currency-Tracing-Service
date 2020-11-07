@@ -117,7 +117,7 @@ router.post('/searchAll', async function(req, res, next) {
     let transactionCount = await tr.methods.transactionCount().call({
         from: nowAccount
     });
-    var result = await tr.methods.token_query(req.body.index).call({
+    var result = await tr.methods.token_query(req.body.checkPoint).call({
         from: nowAccount
     });
 
