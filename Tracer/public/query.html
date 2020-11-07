@@ -166,14 +166,14 @@
             })
         })
 
-        var repeatQuery = 0;
-        var repeatUpdate = 0;
+        const repeatQuery = 0;
+        const repeatUpdate = 0;
         var checkPoint = 0;
 
         function updateInfo(result) {
             clear();
 
-            repeatUpdate = window.setInterval(function() {
+            repeatUpdate = setInterval(function() {
                 $.ajax({
                     url: "getTracer",
                     type: "POST",
@@ -214,7 +214,7 @@
             $('#from').val('');
             $('#to').val('');
 
-            window.clearInterval(repeatQuery);
+            clearInterval(repeatQuery);
             checkPoint = 0;
         }
 
@@ -222,7 +222,7 @@
             $('.result').remove();
             $('.section_table').hide();
 
-            window.clearInterval(repeatQuery);
+            clearInterval(repeatQuery);
             checkPoint = 0;
 
             repeatQuery = setInterval(function() {
@@ -400,7 +400,7 @@
             $('.result').remove();
             $('.section_table').hide();
 
-            window.clearInterval(repeatQuery);
+            clearInterval(repeatQuery);
             checkPoint = 0;
 
             if ($('#toBlok').val() == 0 && $('#toDate').val() != "") {
