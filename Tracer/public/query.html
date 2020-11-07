@@ -492,7 +492,7 @@
                 } else if ($('#fromBlock').val() != "" && $('#toBlock').val() != 0) {
                     if ($('#fromBlock').val() < $('#toBlock').val()) {
                         if ($('#from').val() != "" && $('#to').val() != "") {
-                            $.post('/searchHeightBoth', {
+                            $.post('/searchHeight', {
                                 tokenAddress: $('#tokenList').val(),
                                 tracerAddress: $('#tracerAddress').val(),
                                 fromBlock: $('#fromBlock').val(),
@@ -508,7 +508,7 @@
                         } else if ($('#from').val() != "") {
                             repeatQuery = setInterval(function() {
                                 $.ajax({
-                                    url: "searchHeightUser",
+                                    url: "searchHeight",
                                     type: "POST",
                                     cache: false,
                                     data: {
@@ -529,7 +529,7 @@
                         } else if ($('#to').val() != "") {
                             repeatQuery = setInterval(function() {
                                 $.ajax({
-                                    url: "searchHeightUser",
+                                    url: "searchHeight",
                                     type: "POST",
                                     cache: false,
                                     data: {
