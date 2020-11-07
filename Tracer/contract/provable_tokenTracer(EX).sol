@@ -153,14 +153,15 @@ contract tokenTracer is usingProvable {
         _value = new uint[](count);
         _blockNumber = new uint[](count);
         _timestamp = new uint[](count);
-        for (_checkPoint = checkPoint; _checkPoint < checkPoint + count; _checkPoint++) {
-            _transactionHash[_checkPoint] = transactionHash[checkPoint + _checkPoint];
-            _sender[_checkPoint] = sender[checkPoint + _checkPoint];
-            _receiver[_checkPoint] = receiver[checkPoint + _checkPoint];
-            _value[_checkPoint] = value[checkPoint + _checkPoint];
-            _blockNumber[_checkPoint] = blockNumber[checkPoint + _checkPoint];
-            _timestamp[_checkPoint] = timeStamp[checkPoint + _checkPoint];
+        for (uint i = 0; i < count; i++) {
+            _transactionHash[i] = transactionHash[checkPoint + i];
+            _sender[i] = sender[checkPoint + i];
+            _receiver[i] = receiver[checkPoint + i];
+            _value[i] = value[checkPoint + i];
+            _blockNumber[i] = blockNumber[checkPoint + i];
+            _timestamp[i] = timeStamp[checkPoint + i];
         }
+        _checkPoint = checkPoint + 100;
     }
     
     function token_queryAccount(address _from, address _to, uint checkPoint) public view returns(uint _checkPoint, bytes32[] memory _transactionHash, address[] memory _sender, address[] memory _receiver, uint[] memory _value, uint[] memory _blockNumber, uint[] memory _timestamp) {
