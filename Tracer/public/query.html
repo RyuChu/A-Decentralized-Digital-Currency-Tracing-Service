@@ -412,13 +412,14 @@
                 if ($('#fromDate').val() != "" && $('#toDate').val() != "") {
                     if ((new Date($('#fromDate').val()).getTime()) < (new Date($('#toDate').val()).getTime())) {
                         if ($('#from').val() != "" && $('#to').val() != "") {
-                            $.post('/searchDateBoth', {
+                            $.post('/searchDate', {
                                 tokenAddress: $('#tokenList').val(),
                                 tracerAddress: $('#tracerAddress').val(),
                                 fromDate: (new Date($('#fromDate').val()).getTime()) / 1000,
                                 toDate: (new Date($('#toDate').val()).getTime()) / 1000,
                                 from: $('#from').val(),
                                 to: $('#to').val(),
+                                searchType: 0,
                                 checkPoint: checkPoint
                             }, function(result) {
                                 display(result);
@@ -427,7 +428,7 @@
                         } else if ($('#from').val() != "") {
                             repeatQuery = setInterval(function() {
                                 $.ajax({
-                                    url: "searchDateUser",
+                                    url: "searchDate",
                                     type: "POST",
                                     cache: false,
                                     data: {
@@ -435,8 +436,8 @@
                                         tracerAddress: $('#tracerAddress').val(),
                                         fromDate: (new Date($('#fromDate').val()).getTime()) / 1000,
                                         toDate: (new Date($('#toDate').val()).getTime()) / 1000,
-                                        account: $('#from').val(),
-                                        searchType: 0,
+                                        from: $('#from').val(),
+                                        searchType: 1,
                                         checkPoint: checkPoint
                                     },
                                     success: function(result) {
@@ -448,7 +449,7 @@
                         } else if ($('#to').val() != "") {
                             repeatQuery = setInterval(function() {
                                 $.ajax({
-                                    url: "searchDateUser",
+                                    url: "searchDate",
                                     type: "POST",
                                     cache: false,
                                     data: {
@@ -456,8 +457,8 @@
                                         tracerAddress: $('#tracerAddress').val(),
                                         fromDate: (new Date($('#fromDate').val()).getTime()) / 1000,
                                         toDate: (new Date($('#toDate').val()).getTime()) / 1000,
-                                        account: $('#to').val(),
-                                        searchType: 1,
+                                        to: $('#to').val(),
+                                        searchType: 2,
                                         checkPoint: checkPoint
                                     },
                                     success: function(result) {
@@ -477,6 +478,7 @@
                                         tracerAddress: $('#tracerAddress').val(),
                                         fromDate: (new Date($('#fromDate').val()).getTime()) / 1000,
                                         toDate: (new Date($('#toDate').val()).getTime()) / 1000,
+                                        searchType: 3,
                                         checkPoint: checkPoint
                                     },
                                     success: function(result) {
@@ -499,6 +501,7 @@
                                 toBlock: $('#toBlock').val(),
                                 from: $('#from').val(),
                                 to: $('#to').val(),
+                                searchType: 0,
                                 checkPoint: checkPoint
                             }, function(result) {
                                 display(result);
@@ -515,8 +518,8 @@
                                         tracerAddress: $('#tracerAddress').val(),
                                         fromBlock: $('#fromBlock').val(),
                                         toBlock: $('#toBlock').val(),
-                                        account: $('#from').val(),
-                                        searchType: 0,
+                                        from: $('#from').val(),
+                                        searchType: 1,
                                         checkPoint: checkPoint
                                     },
                                     success: function(result) {
@@ -536,8 +539,8 @@
                                         tracerAddress: $('#tracerAddress').val(),
                                         fromBlock: $('#fromBlock').val(),
                                         toBlock: $('#toBlock').val(),
-                                        account: $('#to').val(),
-                                        searchType: 1,
+                                        to: $('#to').val(),
+                                        searchType: 2,
                                         checkPoint: checkPoint
                                     },
                                     success: function(result) {
@@ -557,6 +560,7 @@
                                         tracerAddress: $('#tracerAddress').val(),
                                         fromBlock: $('#fromBlock').val(),
                                         toBlock: $('#toBlock').val(),
+                                        searchType: 3,
                                         checkPoint: checkPoint
                                     },
                                     success: function(result) {
@@ -579,7 +583,7 @@
                                 data: {
                                     tokenAddress: $('#tokenList').val(),
                                     tracerAddress: $('#tracerAddress').val(),
-                                    account: $('#from').val(),
+                                    from: $('#from').val(),
                                     searchType: 0,
                                     checkPoint: checkPoint
                                 },
@@ -598,7 +602,7 @@
                                 data: {
                                     tokenAddress: $('#tokenList').val(),
                                     tracerAddress: $('#tracerAddress').val(),
-                                    account: $('#to').val(),
+                                    to: $('#to').val(),
                                     searchType: 1,
                                     checkPoint: checkPoint
                                 },
@@ -609,11 +613,12 @@
                             });
                         }, 1500);
                     } else {
-                        $.post('/searchBoth', {
+                        $.post('/searchAccount', {
                             tokenAddress: $('#tokenList').val(),
                             tracerAddress: $('#tracerAddress').val(),
                             from: $('#from').val(),
                             to: $('#to').val(),
+                            searchType: 2,
                             checkPoint: checkPoint
                         }, function(result) {
                             display(result);
