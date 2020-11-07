@@ -161,7 +161,7 @@ contract tokenTracer is usingProvable {
             _blockNumber[i] = blockNumber[checkPoint + i];
             _timestamp[i] = timeStamp[checkPoint + i];
         }
-        _checkPoint = checkPoint + 100;
+        _checkPoint = checkPoint + count;
     }
     
     function token_queryAccount(address _from, address _to, uint checkPoint) public view returns(uint _checkPoint, bytes32[] memory _transactionHash, address[] memory _sender, address[] memory _receiver, uint[] memory _value, uint[] memory _blockNumber, uint[] memory _timestamp) {
