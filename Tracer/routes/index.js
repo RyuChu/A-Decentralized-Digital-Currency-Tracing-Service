@@ -122,12 +122,13 @@ router.post('/searchAll', async function(req, res, next) {
     });
 
     res.send({
-        txn: result[0],
-        from: result[1],
-        to: result[2],
-        quantity: result[3],
-        block: result[4],
-        timeStamp: result[5],
+        checkPoint: result[0],
+        txn: result[1],
+        from: result[2],
+        to: result[3],
+        quantity: result[4],
+        block: result[5],
+        timeStamp: result[6],
         decimal: decimal
     });
 });

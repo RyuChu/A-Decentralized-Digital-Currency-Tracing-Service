@@ -166,9 +166,9 @@
             })
         })
 
-        var resultIndex = 0;
         var repeatQuery = 0;
         var repeatUpdate = 0;
+        var checkPoint = 0;
 
         function updateInfo(result) {
             clear();
@@ -215,7 +215,7 @@
             $('#to').val('');
 
             window.clearInterval(repeatQuery);
-            resultIndex = 0;
+            checkPoint = 0;
         }
 
         $('#searchButton').click(function() {
@@ -223,7 +223,7 @@
             $('.section_table').hide();
 
             window.clearInterval(repeatQuery);
-            resultIndex = 0;
+            checkPoint = 0;
 
             repeatQuery = setInterval(function() {
                 $.ajax({
@@ -233,10 +233,11 @@
                     data: {
                         tokenAddress: $('#tokenList').val(),
                         tracerAddress: $('#tracerAddress').val(),
-                        index: resultIndex
+                        checkPoint: checkPoint
                     },
                     success: function(result) {
                         display(result);
+                        checkPoint = result.checkPoint;
                     }
                 });
             }, 1500);
@@ -395,16 +396,13 @@
             }
         });
 
-        var checkPoint = 0;
-
         function filterButton() {
             $('.result').remove();
             $('.section_table').hide();
 
             window.clearInterval(repeatQuery);
-            resultIndex = 0;
-
             checkPoint = 0;
+
             if ($('#toBlok').val() == 0 && $('#toDate').val() != "") {
                 alert('You can only do one range query of block/date. Please check the query input again!')
                 clear();
@@ -634,7 +632,6 @@
 
             for (var i = 0; i < result.txn.length; i++) {
                 $('.wrapper').append(`<article class="_row result"><ul><li class="content">${result.txn[i]}</li><li>${result.block[i]}</li><li>${timeStamp2String(result.timeStamp[i])}</li><li>${result.from[i]}</li><li>${result.to[i]}</li><li>${result.quantity[i]/Math.pow(10,result.decimal)}</li></ul><ul class="more-content"><li>Transaction Hash: ${result.txn[i]}<br>Block Number: ${result.block[i]}<br>Time: ${timeStamp2String(result.timeStamp[i])}<br>From: ${result.from[i]}<br>To: ${result.to[i]}<br>Quantity: ${result.quantity[i]/Math.pow(10,result.decimal)}</li></ul></article>`);
-                resultIndex++;
             }
         }
 
