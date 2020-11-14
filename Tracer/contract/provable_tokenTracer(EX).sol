@@ -135,6 +135,7 @@ contract tokenTracer is usingProvable {
             }
         }
         if (transactionCount == transactionHash.length) {
+        	// 同一block有超過50筆交易，從後50筆開始找，以此類推
             syncIndex += 50;
         }
         transactionCount = transactionHash.length;
