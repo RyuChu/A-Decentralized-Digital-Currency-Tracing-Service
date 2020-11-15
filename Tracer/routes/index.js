@@ -219,15 +219,15 @@ router.post('/searchAccount', async function(req, res, next) {
     tr.options.address = web3.utils.toChecksumAddress(req.body.tracerAddress);
     var result;
     if (req.body.searchType == '0') {
-        result = await tr.methods.token_queryAccount(web3.utils.toChecksumAddress(req.body.from), nowAccount, req.body.checkPoint).call({
+        result = await tr.methods.token_queryAccount(web3.utils.toChecksumAddress(req.body.from), web3.utils.toChecksumAddress(req.body.to), req.body.checkPoint).call({
             from: nowAccount
         });
     } else if (req.body.searchType == '1') {
-        result = await tr.methods.token_queryAccount(nowAccount, web3.utils.toChecksumAddress(req.body.to), req.body.checkPoint).call({
+        result = await tr.methods.token_queryAccount(web3.utils.toChecksumAddress(req.body.from), nowAccount, req.body.checkPoint).call({
             from: nowAccount
         });
     } else {
-        result = await tr.methods.token_queryAccount(web3.utils.toChecksumAddress(req.body.from), web3.utils.toChecksumAddress(req.body.to), req.body.checkPoint).call({
+        result = await tr.methods.token_queryAccount(nowAccount, web3.utils.toChecksumAddress(req.body.to), req.body.checkPoint).call({
             from: nowAccount
         });
     }

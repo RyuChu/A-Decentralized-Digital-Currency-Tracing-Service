@@ -470,10 +470,10 @@
                         alert('Error! 請輸入正確之區塊範圍');
                     }
                 } else if ($('#from').val() != "" || $('#to').val() != "") {
-                    if ($('#from').val() != "") {
+                    if ($('#from').val() != "" && $('#to').val() != "") {
                         flagAccount0 = true;
                         clickSearchAccount(0);
-                    } else if ($('#to').val() != "") {
+                    } else if ($('#from').val() != "") {
                         flagAccount1 = true;
                         clickSearchAccount(1);
                     } else {
@@ -678,6 +678,7 @@
                         tokenAddress: $('#tokenList').val(),
                         tracerAddress: $('#tracerAddress').val(),
                         from: $('#from').val(),
+                        to: $('#to').val(),
                         searchType: 0,
                         checkPoint: checkPoint
                     },
@@ -697,7 +698,7 @@
                     data: {
                         tokenAddress: $('#tokenList').val(),
                         tracerAddress: $('#tracerAddress').val(),
-                        to: $('#to').val(),
+                        from: $('#from').val(),
                         searchType: 1,
                         checkPoint: checkPoint
                     },
@@ -717,7 +718,6 @@
                     data: {
                         tokenAddress: $('#tokenList').val(),
                         tracerAddress: $('#tracerAddress').val(),
-                        from: $('#from').val(),
                         to: $('#to').val(),
                         searchType: 2,
                         checkPoint: checkPoint
