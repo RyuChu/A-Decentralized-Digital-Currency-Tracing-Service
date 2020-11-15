@@ -172,7 +172,7 @@
         var checkPoint = 0;
         var flag = true;
 
-        function updateInfo(result) {
+        function updateInfo() {
             repeatUpdate = setTimeout(function() {
                 $.ajax({
                     url: "getTracer",
@@ -194,6 +194,8 @@
                             $('#oraclizeStatus').val('Pause');
                             $('#oraclizeStatus').attr('style', 'background-color: #E73C3E');
                         }
+
+                        updateInfo();
                     }
                 });
             }, 5000);
@@ -231,27 +233,30 @@
             $('#searchButton').prop('disabled', true);
             flag = true;
 
-            repeatQuery = setTimeout(function() {
-                $.ajax({
-                    url: "searchAll",
-                    type: "POST",
-                    cache: false,
-                    data: {
-                        tokenAddress: $('#tokenList').val(),
-                        tracerAddress: $('#tracerAddress').val(),
-                        checkPoint: checkPoint
-                    },
-                    success: function(result) {
-                        if (!flag) {
-                            display(result);
-                            checkPoint = result.checkPoint;
-                        } else {
-                            flag = false;
-                        }
-                    }
-                });
-            }, 1500);
+            clickSearchBtn();
         })
+
+        function clickSearchBtn() {
+            $.ajax({
+                url: "searchAll",
+                type: "POST",
+                cache: false,
+                data: {
+                    tokenAddress: $('#tokenList').val(),
+                    tracerAddress: $('#tracerAddress').val(),
+                    checkPoint: checkPoint
+                },
+                success: function(result) {
+                    if (!flag) {
+                        display(result);
+                        checkPoint = result.checkPoint;
+                    } else {
+                        flag = false;
+                    }
+                    repeatQuery = setTimeout(function() { clickSearchBtn() }, 1500);
+                }
+            });
+        }
 
         var filter_block = false;
         $('#queryFromBlock').click(function(e) {
@@ -442,110 +447,17 @@
                             filter_from = true;
                             filter_to = true;
 
-                            repeatQuery = setTimeout(function() {
-                                $.ajax({
-                                    url: "searchDate",
-                                    type: "POST",
-                                    cache: false,
-                                    data: {
-                                        tokenAddress: $('#tokenList').val(),
-                                        tracerAddress: $('#tracerAddress').val(),
-                                        fromDate: (new Date($('#fromDate').val()).getTime()) / 1000,
-                                        toDate: (new Date($('#toDate').val()).getTime()) / 1000,
-                                        from: $('#from').val(),
-                                        to: $('#to').val(),
-                                        searchType: 0,
-                                        checkPoint: checkPoint
-                                    },
-                                    success: function(result) {
-                                        if (!flag) {
-                                            display(result);
-                                            checkPoint = result.checkPoint;
-                                        } else {
-                                            flag = false;
-                                        }
-
-                                    }
-                                });
-                            }, 1500);
+                            clickSearchDate(0);
                         } else if ($('#from').val() != "") {
                             filter_from = true;
 
-                            repeatQuery = setTimeout(function() {
-                                $.ajax({
-                                    url: "searchDate",
-                                    type: "POST",
-                                    cache: false,
-                                    data: {
-                                        tokenAddress: $('#tokenList').val(),
-                                        tracerAddress: $('#tracerAddress').val(),
-                                        fromDate: (new Date($('#fromDate').val()).getTime()) / 1000,
-                                        toDate: (new Date($('#toDate').val()).getTime()) / 1000,
-                                        from: $('#from').val(),
-                                        searchType: 1,
-                                        checkPoint: checkPoint
-                                    },
-                                    success: function(result) {
-                                        if (!flag) {
-                                            display(result);
-                                            checkPoint = result.checkPoint;
-                                        } else {
-                                            flag = false;
-                                        }
-                                    }
-                                });
-                            }, 1500);
+                            clickSearchDate(1);
                         } else if ($('#to').val() != "") {
                             filter_to = true;
 
-                            repeatQuery = setTimeout(function() {
-                                $.ajax({
-                                    url: "searchDate",
-                                    type: "POST",
-                                    cache: false,
-                                    data: {
-                                        tokenAddress: $('#tokenList').val(),
-                                        tracerAddress: $('#tracerAddress').val(),
-                                        fromDate: (new Date($('#fromDate').val()).getTime()) / 1000,
-                                        toDate: (new Date($('#toDate').val()).getTime()) / 1000,
-                                        to: $('#to').val(),
-                                        searchType: 2,
-                                        checkPoint: checkPoint
-                                    },
-                                    success: function(result) {
-                                        if (!flag) {
-                                            display(result);
-                                            checkPoint = result.checkPoint;
-                                        } else {
-                                            flag = false;
-                                        }
-                                    }
-                                });
-                            }, 1500);
+                            clickSearchDate(2);
                         } else {
-                            repeatQuery = setTimeout(function() {
-                                $.ajax({
-                                    url: "searchDate",
-                                    type: "POST",
-                                    cache: false,
-                                    data: {
-                                        tokenAddress: $('#tokenList').val(),
-                                        tracerAddress: $('#tracerAddress').val(),
-                                        fromDate: (new Date($('#fromDate').val()).getTime()) / 1000,
-                                        toDate: (new Date($('#toDate').val()).getTime()) / 1000,
-                                        searchType: 3,
-                                        checkPoint: checkPoint
-                                    },
-                                    success: function(result) {
-                                        if (!flag) {
-                                            display(result);
-                                            checkPoint = result.checkPoint;
-                                        } else {
-                                            flag = false;
-                                        }
-                                    }
-                                });
-                            }, 1500);
+                            clickSearchDate(3);
                         }
                     } else {
                         alert('Error! 請輸入正確之時間範圍');
@@ -558,109 +470,17 @@
                             filter_from = true;
                             filter_to = true;
 
-                            repeatQuery = setTimeout(function() {
-                                $.ajax({
-                                    url: "searchHeight",
-                                    type: "POST",
-                                    cache: false,
-                                    data: {
-                                        tokenAddress: $('#tokenList').val(),
-                                        tracerAddress: $('#tracerAddress').val(),
-                                        fromBlock: $('#fromBlock').val(),
-                                        toBlock: $('#toBlock').val(),
-                                        from: $('#from').val(),
-                                        to: $('#to').val(),
-                                        searchType: 0,
-                                        checkPoint: checkPoint
-                                    },
-                                    success: function(result) {
-                                        if (!flag) {
-                                            display(result);
-                                            checkPoint = result.checkPoint;
-                                        } else {
-                                            flag = false;
-                                        }
-                                    }
-                                });
-                            }, 1500);
+                            clickSearchBlock(0);
                         } else if ($('#from').val() != "") {
                             filter_from = true;
 
-                            repeatQuery = setTimeout(function() {
-                                $.ajax({
-                                    url: "searchHeight",
-                                    type: "POST",
-                                    cache: false,
-                                    data: {
-                                        tokenAddress: $('#tokenList').val(),
-                                        tracerAddress: $('#tracerAddress').val(),
-                                        fromBlock: $('#fromBlock').val(),
-                                        toBlock: $('#toBlock').val(),
-                                        from: $('#from').val(),
-                                        searchType: 1,
-                                        checkPoint: checkPoint
-                                    },
-                                    success: function(result) {
-                                        if (!flag) {
-                                            display(result);
-                                            checkPoint = result.checkPoint;
-                                        } else {
-                                            flag = false;
-                                        }
-                                    }
-                                });
-                            }, 1500);
+                            clickSearchBlock(1);
                         } else if ($('#to').val() != "") {
                             filter_to = true;
 
-                            repeatQuery = setTimeout(function() {
-                                $.ajax({
-                                    url: "searchHeight",
-                                    type: "POST",
-                                    cache: false,
-                                    data: {
-                                        tokenAddress: $('#tokenList').val(),
-                                        tracerAddress: $('#tracerAddress').val(),
-                                        fromBlock: $('#fromBlock').val(),
-                                        toBlock: $('#toBlock').val(),
-                                        to: $('#to').val(),
-                                        searchType: 2,
-                                        checkPoint: checkPoint
-                                    },
-                                    success: function(result) {
-                                        if (!flag) {
-                                            display(result);
-                                            checkPoint = result.checkPoint;
-                                        } else {
-                                            flag = false;
-                                        }
-                                    }
-                                });
-                            }, 1500);
+                            clickSearchBlock(2);
                         } else {
-                            repeatQuery = setTimeout(function() {
-                                $.ajax({
-                                    url: "searchHeight",
-                                    type: "POST",
-                                    cache: false,
-                                    data: {
-                                        tokenAddress: $('#tokenList').val(),
-                                        tracerAddress: $('#tracerAddress').val(),
-                                        fromBlock: $('#fromBlock').val(),
-                                        toBlock: $('#toBlock').val(),
-                                        searchType: 3,
-                                        checkPoint: checkPoint
-                                    },
-                                    success: function(result) {
-                                        if (!flag) {
-                                            display(result);
-                                            checkPoint = result.checkPoint;
-                                        } else {
-                                            flag = false;
-                                        }
-                                    }
-                                });
-                            }, 1500);
+                            clickSearchBlock(3);
                         }
                     } else {
                         alert('Error! 請輸入正確之區塊範圍');
@@ -669,74 +489,289 @@
                     if ($('#from').val() != "") {
                         filter_from = true;
 
-                        repeatQuery = setTimeout(function() {
-                            $.ajax({
-                                url: "searchAccount",
-                                type: "POST",
-                                cache: false,
-                                data: {
-                                    tokenAddress: $('#tokenList').val(),
-                                    tracerAddress: $('#tracerAddress').val(),
-                                    from: $('#from').val(),
-                                    searchType: 0,
-                                    checkPoint: checkPoint
-                                },
-                                success: function(result) {
-                                    if (!flag) {
-                                        display(result);
-                                        checkPoint = result.checkPoint;
-                                    } else {
-                                        flag = false;
-                                    }
-                                }
-                            });
-                        }, 1500);
+                        clickSearchAccount(0);
                     } else if ($('#to').val() != "") {
                         filter_to = true;
 
-                        repeatQuery = setTimeout(function() {
-                            $.ajax({
-                                url: "searchAccount",
-                                type: "POST",
-                                cache: false,
-                                data: {
-                                    tokenAddress: $('#tokenList').val(),
-                                    tracerAddress: $('#tracerAddress').val(),
-                                    to: $('#to').val(),
-                                    searchType: 1,
-                                    checkPoint: checkPoint
-                                },
-                                success: function(result) {
-                                    if (!flag) {
-                                        display(result);
-                                        checkPoint = result.checkPoint;
-                                    } else {
-                                        flag = false;
-                                    }
-                                }
-                            });
-                        }, 1500);
+                        clickSearchAccount(1);
                     } else {
                         filter_from = true;
                         filter_to = true;
 
-                        $.post('/searchAccount', {
-                            tokenAddress: $('#tokenList').val(),
-                            tracerAddress: $('#tracerAddress').val(),
-                            from: $('#from').val(),
-                            to: $('#to').val(),
-                            searchType: 2,
-                            checkPoint: checkPoint
-                        }, function(result) {
-                            if (!flag) {
-                                display(result);
-                                checkPoint = result.checkPoint;
-                            } else {
-                                flag = false;
-                            }
-                        })
+                        clickSearchAccount(2);
                     }
                 }
+            }
+        }
+
+        function clickSearchDate(searchType) {
+            if (searchType == 0) {
+                $.ajax({
+                    url: "searchDate",
+                    type: "POST",
+                    cache: false,
+                    data: {
+                        tokenAddress: $('#tokenList').val(),
+                        tracerAddress: $('#tracerAddress').val(),
+                        fromDate: (new Date($('#fromDate').val()).getTime()) / 1000,
+                        toDate: (new Date($('#toDate').val()).getTime()) / 1000,
+                        from: $('#from').val(),
+                        to: $('#to').val(),
+                        searchType: 0,
+                        checkPoint: checkPoint
+                    },
+                    success: function(result) {
+                        if (!flag) {
+                            display(result);
+                            checkPoint = result.checkPoint;
+                        } else {
+                            flag = false;
+                        }
+                        repeatQuery = setTimeout(function() { clickSearchDate(0) }, 1500);
+                    }
+                });
+            } else if (searchType == 1) {
+                $.ajax({
+                    url: "searchDate",
+                    type: "POST",
+                    cache: false,
+                    data: {
+                        tokenAddress: $('#tokenList').val(),
+                        tracerAddress: $('#tracerAddress').val(),
+                        fromDate: (new Date($('#fromDate').val()).getTime()) / 1000,
+                        toDate: (new Date($('#toDate').val()).getTime()) / 1000,
+                        from: $('#from').val(),
+                        searchType: 1,
+                        checkPoint: checkPoint
+                    },
+                    success: function(result) {
+                        if (!flag) {
+                            display(result);
+                            checkPoint = result.checkPoint;
+                        } else {
+                            flag = false;
+                        }
+                        repeatQuery = setTimeout(function() { clickSearchDate(1) }, 1500);
+                    }
+                });
+            } else if (searchType == 2) {
+                $.ajax({
+                    url: "searchDate",
+                    type: "POST",
+                    cache: false,
+                    data: {
+                        tokenAddress: $('#tokenList').val(),
+                        tracerAddress: $('#tracerAddress').val(),
+                        fromDate: (new Date($('#fromDate').val()).getTime()) / 1000,
+                        toDate: (new Date($('#toDate').val()).getTime()) / 1000,
+                        to: $('#to').val(),
+                        searchType: 2,
+                        checkPoint: checkPoint
+                    },
+                    success: function(result) {
+                        if (!flag) {
+                            display(result);
+                            checkPoint = result.checkPoint;
+                        } else {
+                            flag = false;
+                        }
+                        repeatQuery = setTimeout(function() { clickSearchDate(2) }, 1500);
+                    }
+                });
+            } else {
+                $.ajax({
+                    url: "searchDate",
+                    type: "POST",
+                    cache: false,
+                    data: {
+                        tokenAddress: $('#tokenList').val(),
+                        tracerAddress: $('#tracerAddress').val(),
+                        fromDate: (new Date($('#fromDate').val()).getTime()) / 1000,
+                        toDate: (new Date($('#toDate').val()).getTime()) / 1000,
+                        searchType: 3,
+                        checkPoint: checkPoint
+                    },
+                    success: function(result) {
+                        if (!flag) {
+                            display(result);
+                            checkPoint = result.checkPoint;
+                        } else {
+                            flag = false;
+                        }
+                        repeatQuery = setTimeout(function() { clickSearchDate(3) }, 1500);
+                    }
+                });
+            }
+        }
+
+        function clickSearchBlock(searchType) {
+            if (searchType == 0) {
+                $.ajax({
+                    url: "searchHeight",
+                    type: "POST",
+                    cache: false,
+                    data: {
+                        tokenAddress: $('#tokenList').val(),
+                        tracerAddress: $('#tracerAddress').val(),
+                        fromBlock: $('#fromBlock').val(),
+                        toBlock: $('#toBlock').val(),
+                        from: $('#from').val(),
+                        to: $('#to').val(),
+                        searchType: 0,
+                        checkPoint: checkPoint
+                    },
+                    success: function(result) {
+                        if (!flag) {
+                            display(result);
+                            checkPoint = result.checkPoint;
+                        } else {
+                            flag = false;
+                        }
+                        repeatQuery = setTimeout(function() { clickSearchBlock(0) }, 1500);
+                    }
+                });
+            } else if (searchType == 1) {
+                $.ajax({
+                    url: "searchHeight",
+                    type: "POST",
+                    cache: false,
+                    data: {
+                        tokenAddress: $('#tokenList').val(),
+                        tracerAddress: $('#tracerAddress').val(),
+                        fromBlock: $('#fromBlock').val(),
+                        toBlock: $('#toBlock').val(),
+                        from: $('#from').val(),
+                        searchType: 1,
+                        checkPoint: checkPoint
+                    },
+                    success: function(result) {
+                        if (!flag) {
+                            display(result);
+                            checkPoint = result.checkPoint;
+                        } else {
+                            flag = false;
+                        }
+                        repeatQuery = setTimeout(function() { clickSearchBlock(1) }, 1500);
+                    }
+                });
+            } else if (searchType == 2) {
+                $.ajax({
+                    url: "searchHeight",
+                    type: "POST",
+                    cache: false,
+                    data: {
+                        tokenAddress: $('#tokenList').val(),
+                        tracerAddress: $('#tracerAddress').val(),
+                        fromBlock: $('#fromBlock').val(),
+                        toBlock: $('#toBlock').val(),
+                        to: $('#to').val(),
+                        searchType: 2,
+                        checkPoint: checkPoint
+                    },
+                    success: function(result) {
+                        if (!flag) {
+                            display(result);
+                            checkPoint = result.checkPoint;
+                        } else {
+                            flag = false;
+                        }
+                        repeatQuery = setTimeout(function() { clickSearchBlock(2) }, 1500);
+                    }
+                });
+            } else {
+                $.ajax({
+                    url: "searchHeight",
+                    type: "POST",
+                    cache: false,
+                    data: {
+                        tokenAddress: $('#tokenList').val(),
+                        tracerAddress: $('#tracerAddress').val(),
+                        fromBlock: $('#fromBlock').val(),
+                        toBlock: $('#toBlock').val(),
+                        searchType: 3,
+                        checkPoint: checkPoint
+                    },
+                    success: function(result) {
+                        if (!flag) {
+                            display(result);
+                            checkPoint = result.checkPoint;
+                        } else {
+                            flag = false;
+                        }
+                        repeatQuery = setTimeout(function() { clickSearchBlock(3) }, 1500);
+                    }
+                });
+            }
+        }
+
+        function clickSearchAccount(searchType) {
+            if (searchType == 0) {
+                $.ajax({
+                    url: "searchAccount",
+                    type: "POST",
+                    cache: false,
+                    data: {
+                        tokenAddress: $('#tokenList').val(),
+                        tracerAddress: $('#tracerAddress').val(),
+                        from: $('#from').val(),
+                        searchType: 0,
+                        checkPoint: checkPoint
+                    },
+                    success: function(result) {
+                        if (!flag) {
+                            display(result);
+                            checkPoint = result.checkPoint;
+                        } else {
+                            flag = false;
+                        }
+                        repeatQuery = setTimeout(function() { clickSearchAccount(0) }, 1500);
+                    }
+                });
+            } else if (searchType == 1) {
+                $.ajax({
+                    url: "searchAccount",
+                    type: "POST",
+                    cache: false,
+                    data: {
+                        tokenAddress: $('#tokenList').val(),
+                        tracerAddress: $('#tracerAddress').val(),
+                        to: $('#to').val(),
+                        searchType: 1,
+                        checkPoint: checkPoint
+                    },
+                    success: function(result) {
+                        if (!flag) {
+                            display(result);
+                            checkPoint = result.checkPoint;
+                        } else {
+                            flag = false;
+                        }
+                        repeatQuery = setTimeout(function() { clickSearchAccount(1) }, 1500);
+                    }
+                });
+            } else {
+                $.ajax({
+                    url: "searchAccount",
+                    type: "POST",
+                    cache: false,
+                    data: {
+                        tokenAddress: $('#tokenList').val(),
+                        tracerAddress: $('#tracerAddress').val(),
+                        from: $('#from').val(),
+                        to: $('#to').val(),
+                        searchType: 2,
+                        checkPoint: checkPoint
+                    },
+                    success: function(result) {
+                        if (!flag) {
+                            display(result);
+                            checkPoint = result.checkPoint;
+                        } else {
+                            flag = false;
+                        }
+                        repeatQuery = setTimeout(function() { clickSearchAccount(2) }, 1500);
+                    }
+                });
             }
         }
 
