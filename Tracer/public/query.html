@@ -170,10 +170,10 @@
 
         var repeatQuery, repeatUpdate;
         var checkPoint = 0;
-        var flag = false;
+        var flag = true;
 
         function updateInfo(result) {
-            repeatUpdate = setInterval(function() {
+            repeatUpdate = setTimeout(function() {
                 $.ajax({
                     url: "getTracer",
                     type: "POST",
@@ -216,10 +216,10 @@
 
             $('#searchButton').prop('disabled', false);
 
-            clearInterval(repeatQuery);
+            clearTimeout(repeatQuery);
             repeatQuery = 0;
             checkPoint = 0;
-            flag = false;
+            flag = true;
 
             filter_block = false;
             filter_time = false;
@@ -229,9 +229,9 @@
 
         $('#searchButton').click(function() {
             $('#searchButton').prop('disabled', true);
-            flag = false;
+            flag = true;
 
-            repeatQuery = setInterval(function() {
+            repeatQuery = setTimeout(function() {
                 $.ajax({
                     url: "searchAll",
                     type: "POST",
@@ -242,9 +242,11 @@
                         checkPoint: checkPoint
                     },
                     success: function(result) {
-                        if ((!flag && checkPoint == 0) || checkPoint != 0) {
+                        if (!flag) {
                             display(result);
                             checkPoint = result.checkPoint;
+                        } else {
+                            flag = false;
                         }
                     }
                 });
@@ -421,7 +423,7 @@
         });
 
         function filterButton() {
-            clearInterval(repeatQuery);
+            clearTimeout(repeatQuery);
             repeatQuery = 0;
             checkPoint = 0;
             flag = true;
@@ -440,7 +442,7 @@
                             filter_from = true;
                             filter_to = true;
 
-                            repeatQuery = setInterval(function() {
+                            repeatQuery = setTimeout(function() {
                                 $.ajax({
                                     url: "searchDate",
                                     type: "POST",
@@ -456,18 +458,20 @@
                                         checkPoint: checkPoint
                                     },
                                     success: function(result) {
-                                        if ((flag && checkPoint == 0) || checkPoint != 0) {
+                                        if (!flag) {
                                             display(result);
                                             checkPoint = result.checkPoint;
+                                        } else {
                                             flag = false;
                                         }
+
                                     }
                                 });
                             }, 1500);
                         } else if ($('#from').val() != "") {
                             filter_from = true;
 
-                            repeatQuery = setInterval(function() {
+                            repeatQuery = setTimeout(function() {
                                 $.ajax({
                                     url: "searchDate",
                                     type: "POST",
@@ -482,9 +486,10 @@
                                         checkPoint: checkPoint
                                     },
                                     success: function(result) {
-                                        if ((flag && checkPoint == 0) || checkPoint != 0) {
+                                        if (!flag) {
                                             display(result);
                                             checkPoint = result.checkPoint;
+                                        } else {
                                             flag = false;
                                         }
                                     }
@@ -493,7 +498,7 @@
                         } else if ($('#to').val() != "") {
                             filter_to = true;
 
-                            repeatQuery = setInterval(function() {
+                            repeatQuery = setTimeout(function() {
                                 $.ajax({
                                     url: "searchDate",
                                     type: "POST",
@@ -508,16 +513,17 @@
                                         checkPoint: checkPoint
                                     },
                                     success: function(result) {
-                                        if ((flag && checkPoint == 0) || checkPoint != 0) {
+                                        if (!flag) {
                                             display(result);
                                             checkPoint = result.checkPoint;
+                                        } else {
                                             flag = false;
                                         }
                                     }
                                 });
                             }, 1500);
                         } else {
-                            repeatQuery = setInterval(function() {
+                            repeatQuery = setTimeout(function() {
                                 $.ajax({
                                     url: "searchDate",
                                     type: "POST",
@@ -531,9 +537,10 @@
                                         checkPoint: checkPoint
                                     },
                                     success: function(result) {
-                                        if ((flag && checkPoint == 0) || checkPoint != 0) {
+                                        if (!flag) {
                                             display(result);
                                             checkPoint = result.checkPoint;
+                                        } else {
                                             flag = false;
                                         }
                                     }
@@ -551,7 +558,7 @@
                             filter_from = true;
                             filter_to = true;
 
-                            repeatQuery = setInterval(function() {
+                            repeatQuery = setTimeout(function() {
                                 $.ajax({
                                     url: "searchHeight",
                                     type: "POST",
@@ -567,9 +574,10 @@
                                         checkPoint: checkPoint
                                     },
                                     success: function(result) {
-                                        if ((flag && checkPoint == 0) || checkPoint != 0) {
+                                        if (!flag) {
                                             display(result);
                                             checkPoint = result.checkPoint;
+                                        } else {
                                             flag = false;
                                         }
                                     }
@@ -578,7 +586,7 @@
                         } else if ($('#from').val() != "") {
                             filter_from = true;
 
-                            repeatQuery = setInterval(function() {
+                            repeatQuery = setTimeout(function() {
                                 $.ajax({
                                     url: "searchHeight",
                                     type: "POST",
@@ -593,9 +601,10 @@
                                         checkPoint: checkPoint
                                     },
                                     success: function(result) {
-                                        if ((flag && checkPoint == 0) || checkPoint != 0) {
+                                        if (!flag) {
                                             display(result);
                                             checkPoint = result.checkPoint;
+                                        } else {
                                             flag = false;
                                         }
                                     }
@@ -604,7 +613,7 @@
                         } else if ($('#to').val() != "") {
                             filter_to = true;
 
-                            repeatQuery = setInterval(function() {
+                            repeatQuery = setTimeout(function() {
                                 $.ajax({
                                     url: "searchHeight",
                                     type: "POST",
@@ -619,16 +628,17 @@
                                         checkPoint: checkPoint
                                     },
                                     success: function(result) {
-                                        if ((flag && checkPoint == 0) || checkPoint != 0) {
+                                        if (!flag) {
                                             display(result);
                                             checkPoint = result.checkPoint;
+                                        } else {
                                             flag = false;
                                         }
                                     }
                                 });
                             }, 1500);
                         } else {
-                            repeatQuery = setInterval(function() {
+                            repeatQuery = setTimeout(function() {
                                 $.ajax({
                                     url: "searchHeight",
                                     type: "POST",
@@ -642,9 +652,10 @@
                                         checkPoint: checkPoint
                                     },
                                     success: function(result) {
-                                        if ((flag && checkPoint == 0) || checkPoint != 0) {
+                                        if (!flag) {
                                             display(result);
                                             checkPoint = result.checkPoint;
+                                        } else {
                                             flag = false;
                                         }
                                     }
@@ -658,7 +669,7 @@
                     if ($('#from').val() != "") {
                         filter_from = true;
 
-                        repeatQuery = setInterval(function() {
+                        repeatQuery = setTimeout(function() {
                             $.ajax({
                                 url: "searchAccount",
                                 type: "POST",
@@ -671,9 +682,10 @@
                                     checkPoint: checkPoint
                                 },
                                 success: function(result) {
-                                    if ((flag && checkPoint == 0) || checkPoint != 0) {
+                                    if (!flag) {
                                         display(result);
                                         checkPoint = result.checkPoint;
+                                    } else {
                                         flag = false;
                                     }
                                 }
@@ -682,7 +694,7 @@
                     } else if ($('#to').val() != "") {
                         filter_to = true;
 
-                        repeatQuery = setInterval(function() {
+                        repeatQuery = setTimeout(function() {
                             $.ajax({
                                 url: "searchAccount",
                                 type: "POST",
@@ -695,9 +707,10 @@
                                     checkPoint: checkPoint
                                 },
                                 success: function(result) {
-                                    if ((flag && checkPoint == 0) || checkPoint != 0) {
+                                    if (!flag) {
                                         display(result);
                                         checkPoint = result.checkPoint;
+                                    } else {
                                         flag = false;
                                     }
                                 }
@@ -715,9 +728,10 @@
                             searchType: 2,
                             checkPoint: checkPoint
                         }, function(result) {
-                            if ((flag && checkPoint == 0) || checkPoint != 0) {
+                            if (!flag) {
                                 display(result);
                                 checkPoint = result.checkPoint;
+                            } else {
                                 flag = false;
                             }
                         })
@@ -727,12 +741,10 @@
         }
 
         function display(result) {
-            if (repeatQuery != 0) {
-                $('.section_table').show();
+            $('.section_table').show();
 
-                for (var i = 0; i < result.txn.length; i++) {
-                    $('.wrapper').append(`<article class="_row result"><ul><li class="content">${result.txn[i]}</li><li>${result.block[i]}</li><li>${timeStamp2String(result.timeStamp[i])}</li><li>${result.from[i]}</li><li>${result.to[i]}</li><li>${result.quantity[i]/Math.pow(10,result.decimal)}</li></ul><ul class="more-content"><li>Transaction Hash: ${result.txn[i]}<br>Block Number: ${result.block[i]}<br>Time: ${timeStamp2String(result.timeStamp[i])}<br>From: ${result.from[i]}<br>To: ${result.to[i]}<br>Quantity: ${result.quantity[i]/Math.pow(10,result.decimal)}</li></ul></article>`);
-                }
+            for (var i = 0; i < result.txn.length; i++) {
+                $('.wrapper').append(`<article class="_row result"><ul><li class="content">${result.txn[i]}</li><li>${result.block[i]}</li><li>${timeStamp2String(result.timeStamp[i])}</li><li>${result.from[i]}</li><li>${result.to[i]}</li><li>${result.quantity[i]/Math.pow(10,result.decimal)}</li></ul><ul class="more-content"><li>Transaction Hash: ${result.txn[i]}<br>Block Number: ${result.block[i]}<br>Time: ${timeStamp2String(result.timeStamp[i])}<br>From: ${result.from[i]}<br>To: ${result.to[i]}<br>Quantity: ${result.quantity[i]/Math.pow(10,result.decimal)}</li></ul></article>`);
             }
         }
 
