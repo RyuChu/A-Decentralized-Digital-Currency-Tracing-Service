@@ -225,11 +225,6 @@
             checkPoint = 0;
 
             clearFlag();
-
-            filter_block = false;
-            filter_time = false;
-            filter_from = false;
-            filter_to = false;
         }
 
         function clearFlag() {
@@ -279,7 +274,6 @@
             });
         }
 
-        var filter_block = false;
         $('#queryFromBlock').click(function(e) {
             $('#block_dialog').dialog('open');
             e.preventDefault();
@@ -308,11 +302,6 @@
             open: function(event, ui) {
                 $('.ui-widget-overlay').bind('click', function() {
                     $("#block_dialog").dialog('close');
-
-                    if (!filter_block) {
-                        $('#fromBlock').val('');
-                        $('#toBlock').val('');
-                    }
                 });
             },
             position: {
@@ -322,7 +311,6 @@
             }
         });
 
-        var filter_time = false;
         // Date Picker in Search form
         var pickerFrom = datepicker('#fromDate');
         var pickerTo = datepicker('#toDate');
@@ -354,11 +342,6 @@
             open: function(event, ui) {
                 $('.ui-widget-overlay').bind('click', function() {
                     $("#date_dialog").dialog('close');
-
-                    if (!filter_time) {
-                        $('#fromDate').val('');
-                        $('#toDate').val('');
-                    }
                 });
             },
             position: {
@@ -368,7 +351,6 @@
             }
         });
 
-        var filter_from = false;
         $('#querySender').click(function(e) {
             $('#from_dialog').dialog('open');
             e.preventDefault();
@@ -395,10 +377,6 @@
             open: function(event, ui) {
                 $('.ui-widget-overlay').bind('click', function() {
                     $("#from_dialog").dialog('close');
-
-                    if (!filter_from) {
-                        $('#from').val('');
-                    }
                 });
             },
             position: {
@@ -408,7 +386,6 @@
             }
         });
 
-        var filter_to = false;
         $('#queryReceiver').click(function(e) {
             $('#to_dialog').dialog('open');
             e.preventDefault();
@@ -435,10 +412,6 @@
             open: function(event, ui) {
                 $('.ui-widget-overlay').bind('click', function() {
                     $("#to_dialog").dialog('close');
-
-                    if (!filter_to) {
-                        $('#to').val('');
-                    }
                 });
             },
             position: {
@@ -462,22 +435,13 @@
             } else {
                 if ($('#fromDate').val() != "" && $('#toDate').val() != "") {
                     if ((new Date($('#fromDate').val()).getTime()) <= (new Date($('#toDate').val()).getTime())) {
-                        filter_time = true;
-
                         if ($('#from').val() != "" && $('#to').val() != "") {
-                            filter_from = true;
-                            filter_to = true;
-
                             flagDate0 = true;
                             clickSearchDate(0);
                         } else if ($('#from').val() != "") {
-                            filter_from = true;
-
                             flagDate1 = true;
                             clickSearchDate(1);
                         } else if ($('#to').val() != "") {
-                            filter_to = true;
-
                             flagDate2 = true;
                             clickSearchDate(2);
                         } else {
@@ -489,22 +453,13 @@
                     }
                 } else if ($('#fromBlock').val() != "" && $('#toBlock').val() != 0) {
                     if ($('#fromBlock').val() <= $('#toBlock').val()) {
-                        filter_block = true;
-
                         if ($('#from').val() != "" && $('#to').val() != "") {
-                            filter_from = true;
-                            filter_to = true;
-
                             flagBlock0 = true;
                             clickSearchBlock(0);
                         } else if ($('#from').val() != "") {
-                            filter_from = true;
-
                             flagBlock1 = true;
                             sclickSearchBlock(1);
                         } else if ($('#to').val() != "") {
-                            filter_to = true;
-
                             flagBlock2 = true;
                             clickSearchBlock(2);
                         } else {
@@ -516,19 +471,12 @@
                     }
                 } else if ($('#from').val() != "" || $('#to').val() != "") {
                     if ($('#from').val() != "") {
-                        filter_from = true;
-
                         flagAccount0 = true;
                         clickSearchAccount(0);
                     } else if ($('#to').val() != "") {
-                        filter_to = true;
-
                         flagAccount1 = true;
                         clickSearchAccount(1);
                     } else {
-                        filter_from = true;
-                        filter_to = true;
-
                         flagAccount2 = true;
                         clickSearchAccount(2);
                     }
