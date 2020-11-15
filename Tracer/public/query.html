@@ -218,8 +218,6 @@
 
             $('#searchButton').prop('disabled', false);
 
-            clearTimeout(repeatQuery);
-            repeatQuery = 0;
             checkPoint = 0;
             flag = true;
 
@@ -251,6 +249,8 @@
                         display(result);
                         checkPoint = result.checkPoint;
                     } else {
+                        clearTimeout(repeatQuery);
+                        checkPoint = 0;
                         flag = false;
                     }
                     repeatQuery = setTimeout(function() { clickSearchBtn() }, 1500);
@@ -428,9 +428,6 @@
         });
 
         function filterButton() {
-            clearTimeout(repeatQuery);
-            repeatQuery = 0;
-            checkPoint = 0;
             flag = true;
 
             $('.result').remove();
@@ -525,6 +522,8 @@
                             display(result);
                             checkPoint = result.checkPoint;
                         } else {
+                            clearTimeout(repeatQuery);
+                            checkPoint = 0;
                             flag = false;
                         }
                         repeatQuery = setTimeout(function() { clickSearchDate(0) }, 1500);
@@ -549,6 +548,8 @@
                             display(result);
                             checkPoint = result.checkPoint;
                         } else {
+                            clearTimeout(repeatQuery);
+                            checkPoint = 0;
                             flag = false;
                         }
                         repeatQuery = setTimeout(function() { clickSearchDate(1) }, 1500);
@@ -573,6 +574,8 @@
                             display(result);
                             checkPoint = result.checkPoint;
                         } else {
+                            clearTimeout(repeatQuery);
+                            checkPoint = 0;
                             flag = false;
                         }
                         repeatQuery = setTimeout(function() { clickSearchDate(2) }, 1500);
@@ -596,6 +599,8 @@
                             display(result);
                             checkPoint = result.checkPoint;
                         } else {
+                            clearTimeout(repeatQuery);
+                            checkPoint = 0;
                             flag = false;
                         }
                         repeatQuery = setTimeout(function() { clickSearchDate(3) }, 1500);
@@ -625,6 +630,8 @@
                             display(result);
                             checkPoint = result.checkPoint;
                         } else {
+                            clearTimeout(repeatQuery);
+                            checkPoint = 0;
                             flag = false;
                         }
                         repeatQuery = setTimeout(function() { clickSearchBlock(0) }, 1500);
@@ -649,6 +656,8 @@
                             display(result);
                             checkPoint = result.checkPoint;
                         } else {
+                            clearTimeout(repeatQuery);
+                            checkPoint = 0;
                             flag = false;
                         }
                         repeatQuery = setTimeout(function() { clickSearchBlock(1) }, 1500);
@@ -673,6 +682,8 @@
                             display(result);
                             checkPoint = result.checkPoint;
                         } else {
+                            clearTimeout(repeatQuery);
+                            checkPoint = 0;
                             flag = false;
                         }
                         repeatQuery = setTimeout(function() { clickSearchBlock(2) }, 1500);
@@ -696,6 +707,8 @@
                             display(result);
                             checkPoint = result.checkPoint;
                         } else {
+                            clearTimeout(repeatQuery);
+                            checkPoint = 0;
                             flag = false;
                         }
                         repeatQuery = setTimeout(function() { clickSearchBlock(3) }, 1500);
@@ -722,6 +735,8 @@
                             display(result);
                             checkPoint = result.checkPoint;
                         } else {
+                            clearTimeout(repeatQuery);
+                            checkPoint = 0;
                             flag = false;
                         }
                         repeatQuery = setTimeout(function() { clickSearchAccount(0) }, 1500);
@@ -744,6 +759,8 @@
                             display(result);
                             checkPoint = result.checkPoint;
                         } else {
+                            clearTimeout(repeatQuery);
+                            checkPoint = 0;
                             flag = false;
                         }
                         repeatQuery = setTimeout(function() { clickSearchAccount(1) }, 1500);
@@ -767,6 +784,8 @@
                             display(result);
                             checkPoint = result.checkPoint;
                         } else {
+                            clearTimeout(repeatQuery);
+                            checkPoint = 0;
                             flag = false;
                         }
                         repeatQuery = setTimeout(function() { clickSearchAccount(2) }, 1500);
