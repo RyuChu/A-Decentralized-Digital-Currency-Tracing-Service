@@ -115,7 +115,7 @@
                     tokenName: $('#tokenName').val(),
                     tokenDecimal: $('#tokenDecimal').val()
                 }, function(result) {
-                    if (result.receipt) {
+                    if (result) {
                         alert('Done!');
                         window.location.href = 'query.html';
                     } else {
