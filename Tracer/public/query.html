@@ -440,47 +440,47 @@
                 alert('You can only do one range query of block/date. Please check the query input again!');
             } else {
                 if ($('#fromDate').val() != "" && $('#toDate').val() != "") {
-                    if ((new Date($('#fromDate').val()).getTime()) < (new Date($('#toDate').val()).getTime())) {
+                    if ((new Date($('#fromDate').val()).getTime()) <= (new Date($('#toDate').val()).getTime())) {
                         filter_time = true;
 
                         if ($('#from').val() != "" && $('#to').val() != "") {
                             filter_from = true;
                             filter_to = true;
 
-                            clickSearchDate(0);
+                            setTimeout(function() { clickSearchDate(0) }, 1500);
                         } else if ($('#from').val() != "") {
                             filter_from = true;
 
-                            clickSearchDate(1);
+                            setTimeout(function() { clickSearchDate(1) }, 1500);
                         } else if ($('#to').val() != "") {
                             filter_to = true;
 
-                            clickSearchDate(2);
+                            setTimeout(function() { clickSearchDate(2) }, 1500);
                         } else {
-                            clickSearchDate(3);
+                            setTimeout(function() { clickSearchDate(3) }, 1500);
                         }
                     } else {
                         alert('Error! 請輸入正確之時間範圍');
                     }
                 } else if ($('#fromBlock').val() != "" && $('#toBlock').val() != 0) {
-                    if ($('#fromBlock').val() < $('#toBlock').val()) {
+                    if ($('#fromBlock').val() <= $('#toBlock').val()) {
                         filter_block = true;
 
                         if ($('#from').val() != "" && $('#to').val() != "") {
                             filter_from = true;
                             filter_to = true;
 
-                            clickSearchBlock(0);
+                            setTimeout(function() { clickSearchBlock(0) }, 1500);
                         } else if ($('#from').val() != "") {
                             filter_from = true;
 
-                            clickSearchBlock(1);
+                            setTimeout(function() { clickSearchBlock(1) }, 1500);
                         } else if ($('#to').val() != "") {
                             filter_to = true;
 
-                            clickSearchBlock(2);
+                            setTimeout(function() { clickSearchBlock(2) }, 1500);
                         } else {
-                            clickSearchBlock(3);
+                            setTimeout(function() { clickSearchBlock(3) }, 1500);
                         }
                     } else {
                         alert('Error! 請輸入正確之區塊範圍');
@@ -489,16 +489,16 @@
                     if ($('#from').val() != "") {
                         filter_from = true;
 
-                        clickSearchAccount(0);
+                        setTimeout(function() { clickSearchAccount(0) }, 1500);
                     } else if ($('#to').val() != "") {
                         filter_to = true;
 
-                        clickSearchAccount(1);
+                        setTimeout(function() { clickSearchAccount(1) }, 1500);
                     } else {
                         filter_from = true;
                         filter_to = true;
 
-                        clickSearchAccount(2);
+                        setTimeout(function() { clickSearchAccount(2) }, 1500);
                     }
                 }
             }
