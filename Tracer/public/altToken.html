@@ -111,7 +111,7 @@
                 $('#confirmButton').text('Waiting ...');
 
                 $.post('/alterTokenInfo', {
-                    tokenAddress: $('#tokenAddress').val(),
+                    tokenAddress: $('#tokenList').val(),
                     tokenName: $('#tokenName').val(),
                     tokenDecimal: $('#tokenDecimal').val()
                 }, function(result) {
