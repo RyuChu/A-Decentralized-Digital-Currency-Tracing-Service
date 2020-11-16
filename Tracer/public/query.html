@@ -300,6 +300,9 @@
                     if ($('#fromBlock').val() == "" || $('#toBlock').val() == "") {
                         alert('Error! 請確認輸入之查詢條件');
                     } else {
+                        $('#fromDate').val('Jul 30 2015');
+                        $('#toDate').val('');
+
                         filterButton();
                         $(this).dialog("close");
                     }
@@ -344,6 +347,9 @@
                     if ($('#fromDate').val() == "" || $('#toDate').val() == "") {
                         alert('Error! 請確認輸入之查詢條件');
                     } else {
+                        $('#fromBlock').val('0');
+                        $('#toBlock').val('');
+
                         filterButton();
                         $(this).dialog("close");
                     }
@@ -453,9 +459,6 @@
             } else {
                 if ($('#fromDate').val() != "" && $('#toDate').val() != "") {
                     if ((new Date($('#fromDate').val()).getTime()) <= (new Date($('#toDate').val()).getTime())) {
-                        $('#fromBlock').val('0');
-                        $('#toBlock').val('');
-
                         resetQueryAction();
 
                         if ($('#from').val() != "" && $('#to').val() != "") {
@@ -475,9 +478,6 @@
                         alert('Error! 請輸入正確之時間範圍');
                     }
                 } else if ($('#fromBlock').val() != "" && $('#toBlock').val() != 0) {
-                    $('#fromDate').val('Jul 30 2015');
-                    $('#toDate').val('');
-
                     resetQueryAction();
 
                     if ($('#fromBlock').val() <= $('#toBlock').val()) {
