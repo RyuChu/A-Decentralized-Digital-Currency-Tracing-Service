@@ -297,8 +297,6 @@
             buttons: [{
                 text: 'filter',
                 click: function() {
-                    $('#fromDate').val('Jul 30 2015');
-                    $('#toDate').val('');
                     filterButton();
                     $(this).dialog("close");
                 }
@@ -339,8 +337,6 @@
             buttons: [{
                 text: 'filter',
                 click: function() {
-                    $('#fromBlock').val('0');
-                    $('#toBlock').val('');
                     filterButton();
                     $(this).dialog("close");
                 }
@@ -449,7 +445,11 @@
             } else {
                 if ($('#toDate').val() != "" && $('#toDate').val() != "") {
                     if ((new Date($('#fromDate').val()).getTime()) <= (new Date($('#toDate').val()).getTime())) {
+                        $('#fromBlock').val('0');
+                        $('#toBlock').val('');
+
                         resetQueryAction();
+
                         if ($('#from').val() != "" && $('#to').val() != "") {
                             flagDate0 = true;
                             clickSearchDate(0);
@@ -467,7 +467,11 @@
                         alert('Error! 請輸入正確之時間範圍');
                     }
                 } else if ($('#fromBlock').val() != "" && $('#toBlock').val() != 0) {
+                    $('#fromDate').val('Jul 30 2015');
+                    $('#toDate').val('');
+
                     resetQueryAction();
+                    
                     if ($('#fromBlock').val() <= $('#toBlock').val()) {
                         if ($('#from').val() != "" && $('#to').val() != "") {
                             flagBlock0 = true;
