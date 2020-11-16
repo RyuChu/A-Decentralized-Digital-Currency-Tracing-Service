@@ -282,6 +282,8 @@
             });
         }
 
+        var forBlock = false, forDate = false;
+
         $('#queryFromBlock').click(function(e) {
             $('#block_dialog').dialog('open');
             e.preventDefault();
@@ -317,6 +319,11 @@
             open: function(event, ui) {
                 $('.ui-widget-overlay').bind('click', function() {
                     $("#block_dialog").dialog('close');
+
+                    if (forDate) {
+                        $('#fromBlock').val('Jul 30 2015');
+                        $('#toBlock').val('');
+                    }
                 });
             },
             position: {
@@ -364,6 +371,11 @@
             open: function(event, ui) {
                 $('.ui-widget-overlay').bind('click', function() {
                     $("#date_dialog").dialog('close');
+
+                    if (forBlock) {
+                        $('#fromDate').val('Jul 30 2015');
+                        $('#toDate').val('');
+                    }
                 });
             },
             position: {
@@ -459,6 +471,8 @@
             } else {
                 if ($('#fromDate').val() != "" && $('#toDate').val() != "") {
                     if ((new Date($('#fromDate').val()).getTime()) <= (new Date($('#toDate').val()).getTime())) {
+                        forDate = true;
+                        forBlock = false;
                         resetQueryAction();
 
                         if ($('#from').val() != "" && $('#to').val() != "") {
@@ -478,9 +492,11 @@
                         alert('Error! 請輸入正確之時間範圍');
                     }
                 } else if ($('#fromBlock').val() != "" && $('#toBlock').val() != 0) {
-                    resetQueryAction();
-
                     if ($('#fromBlock').val() <= $('#toBlock').val()) {
+                        forBlock = true;
+                        forDate = false;
+                        resetQueryAction();
+
                         if ($('#from').val() != "" && $('#to').val() != "") {
                             flagBlock0 = true;
                             clickSearchBlock(0);
