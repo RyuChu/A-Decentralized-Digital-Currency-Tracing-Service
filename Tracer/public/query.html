@@ -347,7 +347,7 @@
             }, {
                 text: 'clear',
                 click: function() {
-                    $('#fromDate').val('');
+                    $('#fromDate').val('Jul 30 2015');
                     $('#toDate').val('');
                 }
             }],
@@ -435,7 +435,7 @@
 
         function filterButton() {
             if ($('#toDate').val() != "" && $('#toBlok').val() != "") {
-                alert('You can only do one range query of block/date. Please check the query input again!');
+                alert('You can only do one range query of block / date. Please check the query input again!');
             } else {
                 clearTimeout(repeatQuery);
                 checkPoint = 0;
@@ -445,7 +445,7 @@
                 $('.result').remove();
                 $('.section_table').hide();
 
-                if ($('#fromDate').val() != "" && $('#toDate').val() != "") {
+                if ($('#toDate').val() != "" && $('#toDate').val() != "") {
                     if ((new Date($('#fromDate').val()).getTime()) <= (new Date($('#toDate').val()).getTime())) {
                         if ($('#from').val() != "" && $('#to').val() != "") {
                             flagDate0 = true;
@@ -492,6 +492,8 @@
                         flagAccount2 = true;
                         clickSearchAccount(2);
                     }
+                } else {
+                    alert('Error! 請檢查輸入之查詢條件');
                 }
             }
         }
