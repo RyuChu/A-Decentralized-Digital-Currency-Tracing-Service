@@ -282,7 +282,8 @@
             });
         }
 
-        var forBlock = false, forDate = false;
+        var forBlock = false,
+            forDate = false;
 
         $('#queryFromBlock').click(function(e) {
             $('#block_dialog').dialog('open');
@@ -323,12 +324,13 @@
             open: function(event, ui) {
                 $('.ui-widget-overlay').bind('click', function() {
                     $("#block_dialog").dialog('close');
-
-                    if (forDate) {
-                        $('#fromBlock').val('Jul 30 2015');
-                        $('#toBlock').val('');
-                    }
                 });
+            },
+            close: function(event, ui) {
+                if (forDate) {
+                    $('#fromBlock').val('Jul 30 2015');
+                    $('#toBlock').val('');
+                }
             },
             position: {
                 my: 'center',
@@ -385,6 +387,12 @@
                         $('#toDate').val('');
                     }
                 });
+            },
+            close: function(event, ui) {
+                if (forBlock) {
+                    $('#fromDate').val('Jul 30 2015');
+                    $('#toDate').val('');
+                }
             },
             position: {
                 my: 'center',
