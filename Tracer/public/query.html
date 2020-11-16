@@ -305,6 +305,10 @@
                         $('#fromDate').val('Jul 30 2015');
                         $('#toDate').val('');
 
+                        if (forDate) {
+                            $('#from').val('');
+                            $('#to').val('');
+                        }
                         filterButton();
                         $(this).dialog("close");
                     }
@@ -357,6 +361,10 @@
                         $('#fromBlock').val('0');
                         $('#toBlock').val('');
 
+                        if (forBlock) {
+                            $('#from').val('');
+                            $('#to').val('');
+                        }
                         filterButton();
                         $(this).dialog("close");
                     }
