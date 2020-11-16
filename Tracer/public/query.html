@@ -171,9 +171,17 @@
         var repeatQuery, repeatUpdate;
         var checkPoint = 0;
         var flag = false;
-        var flagDate0 = false, flagDate1 = false, flagDate2 = false, flagDate3 = false;
-        var flagBlock0 = false, flagBlock1 = false, flagBlock2 = false, flagBlock3 = false;
-        var flagAccount0 = false, flagAccount1 = false, flagAccount2 = false;
+        var flagDate0 = false,
+            flagDate1 = false,
+            flagDate2 = false,
+            flagDate3 = false;
+        var flagBlock0 = false,
+            flagBlock1 = false,
+            flagBlock2 = false,
+            flagBlock3 = false;
+        var flagAccount0 = false,
+            flagAccount1 = false,
+            flagAccount2 = false;
 
         function updateInfo() {
             repeatUpdate = setTimeout(function() {
@@ -422,17 +430,17 @@
         });
 
         function filterButton() {
-            clearTimeout(repeatQuery);
-            checkPoint = 0;
-
-            clearFlag();
-
-            $('.result').remove();
-            $('.section_table').hide();
-
-            if ($('#fromDate').val() != "" && $('#toDate').val() != "" && $('#fromBlok').val() != 0  && $('#toBlok').val() != 0) {
+            if ($('#fromDate').val() != "" && $('#toDate').val() != "" && $('#fromBlok').val() != 0 && $('#toBlok').val() != 0) {
                 alert('You can only do one range query of block/date. Please check the query input again!');
             } else {
+                clearTimeout(repeatQuery);
+                checkPoint = 0;
+
+                clearFlag();
+
+                $('.result').remove();
+                $('.section_table').hide();
+                
                 if ($('#fromDate').val() != "" && $('#toDate').val() != "") {
                     if ((new Date($('#fromDate').val()).getTime()) <= (new Date($('#toDate').val()).getTime())) {
                         if ($('#from').val() != "" && $('#to').val() != "") {
