@@ -297,8 +297,12 @@
             buttons: [{
                 text: 'filter',
                 click: function() {
-                    filterButton();
-                    $(this).dialog("close");
+                    if ($('#fromBlock').val() == "" || $('#toBlock').val() == "") {
+                        alert('Error! 請確認輸入之查詢條件');
+                    } else {
+                        filterButton();
+                        $(this).dialog("close");
+                    }
                 }
             }, {
                 text: 'clear',
@@ -337,8 +341,12 @@
             buttons: [{
                 text: 'filter',
                 click: function() {
-                    filterButton();
-                    $(this).dialog("close");
+                    if ($('#fromDate').val() == "" || $('#toDate').val() == "") {
+                        alert('Error! 請確認輸入之查詢條件');
+                    } else {
+                        filterButton();
+                        $(this).dialog("close");
+                    }
                 }
             }, {
                 text: 'clear',
@@ -501,8 +509,6 @@
                         flagAccount2 = true;
                         clickSearchAccount(2);
                     }
-                } else {
-                    alert('Error! 請檢查輸入之查詢條件');
                 }
             }
         }
