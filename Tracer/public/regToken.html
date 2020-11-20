@@ -45,10 +45,10 @@
 						<span class="focus-input100" data-placeholder="&#xe80f;"></span>
 					</div>
 
-					<!-- <div class="wrap-input100 validate-input">
+					<div class="wrap-input100 validate-input">
 						<input class="input100" type="number" min="0" id="tokenDecimal" placeholder="Token decimals(optional)">
 						<span class="focus-input100" data-placeholder="&#xe80f;"></span>
-					</div> -->
+					</div>
 
 					<div class="container-login100-form-btn m-t-32">
 						<button class="login100-form-btn" id="regButton">
@@ -95,8 +95,8 @@
                 if (!$('#tokenDecimal').val()) {
                 	_tokenDecimal = 0;
                 } else {
-                	// _tokenDecimal = $('#tokenDecimal').val();
-                	_tokenDecimal = 6;
+                	_tokenDecimal = $('#tokenDecimal').val();
+                	// _tokenDecimal = 6;
                 }
 
                 $.post('/regTracer', {

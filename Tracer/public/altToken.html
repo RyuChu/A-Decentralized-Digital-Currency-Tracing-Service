@@ -44,11 +44,11 @@
                         <input class="input100" type="text" id="tokenName">
                         <span class="focus-input100"></span>
                     </div>
-                    <!-- <div class="wrap-input100 validate-input">
+                    <div class="wrap-input100 validate-input">
                         <label class="input100" style="height: 18px;">Decimal</label>
                         <input class="input100" type="number" min="0" id="tokenDecimal">
                         <span class="focus-input100"></span>
-                    </div> -->
+                    </div>
                     <div class="container-login100-form-btn">
                         <div class="wrap-login100-form-btn">
                             <div class="login100-form-bgbtn"></div>
@@ -113,8 +113,8 @@
                 $.post('/alterTokenInfo', {
                     tokenAddress: $('#tokenList').val(),
                     tokenName: $('#tokenName').val(),
-                    tokenDecimal: 6
-                    // tokenDecimal: $('#tokenDecimal').val()
+                    // tokenDecimal: 6
+                    tokenDecimal: $('#tokenDecimal').val()
                 }, function(result) {
                     if (result) {
                         alert('Done!');
