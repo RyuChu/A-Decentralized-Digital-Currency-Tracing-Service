@@ -38,15 +38,15 @@
                                         <label class="label-group-2" style="padding-top:35px;">ERC-20 Contracts</label><select class="form-control tm-select" id="tokenList"></select>
                                     </div>
                                     <div class="form-group tm-form-group tm-form-group-pad tm-form-group-2">
-                                        <!-- <div align="left" style="float:left;width:170px;">
+                                        <div align="left" style="float:left;width:170px;">
                                             <label class="label-group-2">Token Name</label> <input class="form-control" id="tokenName" type="text" readonly>
                                         </div>
                                         <div align="left" style="float:right;width:170px;">
                                             <label class="label-group-2">Token Decimals</label> <input class="form-control" id="tokenDecimal" type="text" readonly>
-                                        </div> -->
-                                        <div>
-                                            <label class="label-group-2">Token Name</label> <input class="form-control" id="tokenName" type="text" readonly>
                                         </div>
+                                        <!-- <div>
+                                            <label class="label-group-2">Token Name</label> <input class="form-control" id="tokenName" type="text" readonly>
+                                        </div> -->
                                         <label class="label-group-2" style="padding-top:10px;">Txn Tracer Address</label> <input class="form-control" id="tracerAddress" type="text" readonly>
                                     </div>
                                 </div>
@@ -198,7 +198,7 @@
                     success: function(result) {
                         $('#tracerAddress').val(result.tracer);
                         $('#tokenName').val(result.tokenName);
-                        // $('#tokenDecimal').val(result.tokenDecimal);
+                        $('#tokenDecimal').val(result.tokenDecimal);
                         $('#syncBlock').val(result.syncBlock);
                         $('#syncTxnCount').val(result.syncTxnCount);
                         if (result.oraclizeStatus) {
