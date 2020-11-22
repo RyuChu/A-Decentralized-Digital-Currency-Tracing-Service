@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Web3 = require('web3');
-const web3 = new Web3('http://localhost:8545');
+const web3 = new Web3('http://54.188.34.51:8545');
 const ctContract = require('../contract/tracerCT.json');
 const tracerContract = require('../contract/tokenTracer.json');
 const ctAddress = "0x7CC98282b890aB49DE4Ee00019d2F60C4972A49A";
@@ -65,7 +65,7 @@ router.post('/getTracer', async function(req, res, next) {
     let tokenDecimal = await ct.methods.tokenDecimal(req.body.tokenAddress).call({
         from: nowAccount
     });
-    
+
     let tr = new web3.eth.Contract(tracerContract.abi)
     tr.options.address = tracer
     let syncBlock = await tr.methods.syncBlockHeight().call({
@@ -240,6 +240,59 @@ router.post('/searchAccount', async function(req, res, next) {
         block: result[5],
         timeStamp: result[6],
         decimal: decimal
+    });
+});
+router.post('/searchAllToken', async function(req, res, next) {
+    let ct = new web3.eth.Contract(ctContract.abi);
+    ct.options.address = ctAddress;
+    let tokens = await ct.methods.getTokenContract().call({
+        from: nowAccount
+    });
+    var _checkPoint = [];
+    var _totalResult = [];
+    for (var i = 0; i < tokens.length; i++) {
+        let tokenName = await ct.methods.tokenName(web3.utils.toChecksumAddress(tokens[i])).call({
+            from: nowAccount
+        });
+        let decimal = await ct.methods.tokenDecimal(web3.utils.toChecksumAddress(tokens[i])).call({
+            from: nowAccount
+        });
+
+        let tracer = await ct.methods.tokenTracers(web3.utils.toChecksumAddress(tokens[i])).call({
+            from: nowAccount
+        });
+
+        let tr = new web3.eth.Contract(tracerContract.abi);
+        tr.options.address = web3.utils.toChecksumAddress(web3.utils.toChecksumAddress(tracer));
+        var result = await tr.methods.token_query(req.body.checkPoint).call({
+            from: nowAccount
+        });
+        _checkPoint.push(result[0]);
+        for (var j = 0; j < result[1].length; j++) {
+            var r = new Array();
+            r[0] = result[5][j]; // block
+            r[1] = result[1][j]; // Txn
+            r[2] = result[2][j]; // from
+            r[3] = result[3][j]; // to
+            r[4] = result[4][j]; // quantity
+            r[5] = result[6][j]; // timestamp
+            r[6] = decimal;
+            r[7] = tokenName;
+            _totalResult.push(r);
+        }
+    }
+
+    _totalResult = _totalResult.sort(function(x, y) {
+        if (x[0] === y[0]) {
+            return 0;
+        } else {
+            return (x[0] < y[0]) ? -1 : 1;
+        }
+    });
+
+    res.send({
+        checkPoint: _checkPoint,
+        totalResult: _totalResult
     });
 });
 module.exports = router;
