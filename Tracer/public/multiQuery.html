@@ -31,22 +31,6 @@
                         </div>
                     </div>
                     <div class="row tm-banner-row" id="tm-section-search">
-                        <!-- <form class="tm-search-form tm-section-pad-2">
-                            <div class="form-row tm-search-form-row">
-                                <div class="tm-form-group-4">
-                                    <label class="label-group-2">Token Name</label> <input class="form-control" type="text" readonly>
-                                </div>
-                                <div class="tm-form-group-4">
-                                    <label class="label-group-2">Token Decimals</label> <input class="form-control" type="text" readonly>
-                                </div>
-                                <div class="tm-form-group-4">
-                                    <label class="label-group-2">Sync Block Height</label> <input class="form-control" type="text" readonly>
-                                </div>
-                                <div class="tm-form-group-4">
-                                    <label class="label-group-2">Sync Txn Count</label> <input class="form-control" type="text" readonly>
-                                </div>
-                            </div>
-                        </form> -->
                         <div class="form-group tm-form-group tm-form-group-pad tm-form-group-3 btn-query">
                             <div align="left" style="float:left;width:150px;">
                                 <label>&nbsp;</label> <button class="btn btn-primary tm-btn tm-btn-search text-uppercase" type="button" id="searchButton">Show all Txn</button>
@@ -132,7 +116,8 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css" />
     <script>
     $(function() {
-        // $('.section_table').hide();
+        $('.section_table').hide();
+        $('#searchButton').prop('disabled', true);
 
         // Smooth scroll to search form
         $('.tm-down-arrow-link').click(function() {
@@ -140,22 +125,8 @@
         });
 
         var regTokens = [];
-        $.get('/getTokens', function(tokens) {
-            regTokens = tokens;
-            // for (let token of tokens) {
-            //     $('#tokenList').append(`<option value="${token}">${token}</option>`);
-            // }
-            for (var token of tokens) {
-                $.post('/getTokenInfo', {
-                    tokenAddress: token
-                }, function(result) {
-                    $('#token_dialog h3').append(`<input type="checkbox" value="${result.tokenName}"><label>${result.tokenName}</label><br>`);
-                })
-            }
-        })
-
+        var checkPoint = [];
         var repeatQuery;
-        var checkPoint = Array(regTokens.length).fill(0);
         var flag = false;
         var flagDate0 = false,
             flagDate1 = false,
@@ -168,6 +139,19 @@
         var flagAccount0 = false,
             flagAccount1 = false,
             flagAccount2 = false;
+        var flagToken = false;
+
+        $.get('/getTokens', function(tokens) {
+            for (var token of tokens) {
+                $.post('/getTokenInfo', {
+                    tokenAddress: token
+                }, function(result) {
+                    $('#token_dialog h3').append(`<input type="checkbox" class="tokenFilter" value="${result.tokenAddress}" checked>${result.tokenName}<br>`);
+                })
+            }
+
+            $('#searchButton').prop('disabled', false);
+        })
 
         $('#clearButton').click(function() {
             clear();
@@ -187,7 +171,17 @@
             $('#searchButton').prop('disabled', false);
 
             clearTimeout(repeatQuery);
+
+            $(':checkbox:checked').each(function(i) {
+                $(this).prop("checked", true);
+            })
+            regTokens = [];
+            $(':checkbox:checked').each(function(i) {
+                regTokens[i] = $(this).val();
+            })
+
             checkPoint = [];
+            checkPoint = Array(regTokens.length).fill(0);
 
             clearFlag();
         }
@@ -205,21 +199,29 @@
             flagAccount0 = false;
             flagAccount1 = false;
             flagAccount2 = false;
+            flagToken = false;
         }
 
         $('#searchButton').click(function() {
             $('#searchButton').prop('disabled', true);
 
-            clearTimeout(repeatQuery);
-            checkPoint = 0;
-
-            clearFlag();
-            flag = true;
-
             clickSearchBtn();
         })
 
         function clickSearchBtn() {
+            clearTimeout(repeatQuery);
+
+            clearFlag();
+            flag = true;
+
+            regTokens = [];
+            $(':checkbox:checked').each(function(i) {
+                regTokens[i] = $(this).val();
+            })
+
+            checkPoint = [];
+            checkPoint = Array(regTokens.length).fill(0);
+
             $.ajax({
                 url: "searchAllToken",
                 type: "POST",
@@ -232,7 +234,7 @@
                         display(result.totalResult);
                         for (var i = 0; i < result.checkPoint.length; i++)
                             checkPoint[i] = result.checkPoint[i];
-                        repeatQuery = setTimeout(function() { clickSearchBtn() }, 5000);
+                        repeatQuery = setTimeout(function() { clickSearchBtn() }, 3000);
                     }
                 }
             });
@@ -266,6 +268,7 @@
                             $('#from').val('');
                             $('#to').val('');
                         }
+                        clearFlag();
                         filterButton();
                         $(this).dialog("close");
                     }
@@ -323,6 +326,7 @@
                             $('#from').val('');
                             $('#to').val('');
                         }
+                        clearFlag();
                         filterButton();
                         $(this).dialog("close");
                     }
@@ -371,6 +375,7 @@
             buttons: [{
                 text: 'filter',
                 click: function() {
+                    clearFlag();
                     filterButton();
                     $(this).dialog("close");
                 }
@@ -406,6 +411,7 @@
             buttons: [{
                 text: 'filter',
                 click: function() {
+                    clearFlag();
                     filterButton();
                     $(this).dialog("close");
                 }
@@ -441,14 +447,22 @@
             buttons: [{
                 text: 'filter',
                 click: function() {
+                    clearFlag();
 
-                    // filterButton();
+                    regTokens = [];
+                    $(':checkbox:checked').each(function(i) {
+                        regTokens[i] = $(this).val();
+                    })
+                    flagToken = true;
+                    filterButton();
                     $(this).dialog("close");
                 }
             }, {
                 text: 'clear',
                 click: function() {
-                    // $('#token').val('');
+                    $(':checkbox:checked').each(function(i) {
+                        $(this).prop("checked", true);
+                    })
                 }
             }],
             open: function(event, ui) {
@@ -465,7 +479,14 @@
 
         function resetQueryAction() {
             clearTimeout(repeatQuery);
-            checkPoint = 0;
+
+            regTokens = [];
+            $(':checkbox:checked').each(function(i) {
+                regTokens[i] = $(this).val();
+            })
+
+            checkPoint = [];
+            checkPoint = Array(regTokens.length).fill(0);
 
             clearFlag();
 
@@ -476,7 +497,14 @@
         function filterButton() {
             if ($('#toDate').val() != "" && $('#toBlok').val() != null) {
                 alert('You can only do one range query of block / date. Please check the query input again!');
+            } else if (flagToken) {
+                alert(1);
+                resetQueryAction();
+
+                flagToken = true;
+                clickSearchToken();
             } else {
+                alert(2);
                 if ($('#fromDate').val() != "" && $('#toDate').val() != "") {
                     if ((new Date($('#fromDate').val()).getTime()) <= (new Date($('#toDate').val()).getTime())) {
                         forDate = true;
@@ -540,12 +568,11 @@
         function clickSearchDate(searchType) {
             if (searchType == 0) {
                 $.ajax({
-                    url: "searchDate",
+                    url: "searchTokenDate",
                     type: "POST",
                     cache: false,
                     data: {
-                        tokenAddress: $('#tokenList').val(),
-                        tracerAddress: $('#tracerAddress').val(),
+                        regTokens: regTokens,
                         fromDate: (new Date($('#fromDate').val()).getTime()) / 1000,
                         toDate: (new Date($('#toDate').val()).getTime()) / 1000,
                         from: $('#from').val(),
@@ -555,20 +582,20 @@
                     },
                     success: function(result) {
                         if (flagDate0) {
-                            display(result);
-                            checkPoint = result.checkPoint;
-                            repeatQuery = setTimeout(function() { clickSearchDate(0) }, 1500);
+                            display(result.totalResult);
+                            for (var i = 0; i < result.checkPoint.length; i++)
+                                checkPoint[i] = result.checkPoint[i];
+                            repeatQuery = setTimeout(function() { clickSearchDate(0) }, 3000);
                         }
                     }
                 });
             } else if (searchType == 1) {
                 $.ajax({
-                    url: "searchDate",
+                    url: "searchTokenDate",
                     type: "POST",
                     cache: false,
                     data: {
-                        tokenAddress: $('#tokenList').val(),
-                        tracerAddress: $('#tracerAddress').val(),
+                        regTokens: regTokens,
                         fromDate: (new Date($('#fromDate').val()).getTime()) / 1000,
                         toDate: (new Date($('#toDate').val()).getTime()) / 1000,
                         from: $('#from').val(),
@@ -577,20 +604,20 @@
                     },
                     success: function(result) {
                         if (flagDate1) {
-                            display(result);
-                            checkPoint = result.checkPoint;
-                            repeatQuery = setTimeout(function() { clickSearchDate(1) }, 1500);
+                            display(result.totalResult);
+                            for (var i = 0; i < result.checkPoint.length; i++)
+                                checkPoint[i] = result.checkPoint[i];
+                            repeatQuery = setTimeout(function() { clickSearchDate(1) }, 3000);
                         }
                     }
                 });
             } else if (searchType == 2) {
                 $.ajax({
-                    url: "searchDate",
+                    url: "searchTokenDate",
                     type: "POST",
                     cache: false,
                     data: {
-                        tokenAddress: $('#tokenList').val(),
-                        tracerAddress: $('#tracerAddress').val(),
+                        regTokens: regTokens,
                         fromDate: (new Date($('#fromDate').val()).getTime()) / 1000,
                         toDate: (new Date($('#toDate').val()).getTime()) / 1000,
                         to: $('#to').val(),
@@ -599,20 +626,20 @@
                     },
                     success: function(result) {
                         if (flagDate2) {
-                            display(result);
-                            checkPoint = result.checkPoint;
-                            repeatQuery = setTimeout(function() { clickSearchDate(2) }, 1500);
+                            display(result.totalResult);
+                            for (var i = 0; i < result.checkPoint.length; i++)
+                                checkPoint[i] = result.checkPoint[i];
+                            repeatQuery = setTimeout(function() { clickSearchDate(2) }, 3000);
                         }
                     }
                 });
             } else {
                 $.ajax({
-                    url: "searchDate",
+                    url: "searchTokenDate",
                     type: "POST",
                     cache: false,
                     data: {
-                        tokenAddress: $('#tokenList').val(),
-                        tracerAddress: $('#tracerAddress').val(),
+                        regTokens: regTokens,
                         fromDate: (new Date($('#fromDate').val()).getTime()) / 1000,
                         toDate: (new Date($('#toDate').val()).getTime()) / 1000,
                         searchType: 3,
@@ -620,9 +647,10 @@
                     },
                     success: function(result) {
                         if (flagDate3) {
-                            display(result);
-                            checkPoint = result.checkPoint;
-                            repeatQuery = setTimeout(function() { clickSearchDate(3) }, 1500);
+                            display(result.totalResult);
+                            for (var i = 0; i < result.checkPoint.length; i++)
+                                checkPoint[i] = result.checkPoint[i];
+                            repeatQuery = setTimeout(function() { clickSearchDate(3) }, 3000);
                         }
                     }
                 });
@@ -632,12 +660,11 @@
         function clickSearchBlock(searchType) {
             if (searchType == 0) {
                 $.ajax({
-                    url: "searchHeight",
+                    url: "searchTokenHeight",
                     type: "POST",
                     cache: false,
                     data: {
-                        tokenAddress: $('#tokenList').val(),
-                        tracerAddress: $('#tracerAddress').val(),
+                        regTokens: regTokens,
                         fromBlock: $('#fromBlock').val(),
                         toBlock: $('#toBlock').val(),
                         from: $('#from').val(),
@@ -647,20 +674,20 @@
                     },
                     success: function(result) {
                         if (flagBlock0) {
-                            display(result);
-                            checkPoint = result.checkPoint;
-                            repeatQuery = setTimeout(function() { clickSearchBlock(0) }, 1500);
+                            display(result.totalResult);
+                            for (var i = 0; i < result.checkPoint.length; i++)
+                                checkPoint[i] = result.checkPoint[i];
+                            repeatQuery = setTimeout(function() { clickSearchBlock(0) }, 3000);
                         }
                     }
                 });
             } else if (searchType == 1) {
                 $.ajax({
-                    url: "searchHeight",
+                    url: "searchTokenHeight",
                     type: "POST",
                     cache: false,
                     data: {
-                        tokenAddress: $('#tokenList').val(),
-                        tracerAddress: $('#tracerAddress').val(),
+                        regTokens: regTokens,
                         fromBlock: $('#fromBlock').val(),
                         toBlock: $('#toBlock').val(),
                         from: $('#from').val(),
@@ -669,20 +696,20 @@
                     },
                     success: function(result) {
                         if (flagBlock1) {
-                            display(result);
-                            checkPoint = result.checkPoint;
-                            repeatQuery = setTimeout(function() { clickSearchBlock(1) }, 1500);
+                            display(result.totalResult);
+                            for (var i = 0; i < result.checkPoint.length; i++)
+                                checkPoint[i] = result.checkPoint[i];
+                            repeatQuery = setTimeout(function() { clickSearchBlock(1) }, 3000);
                         }
                     }
                 });
             } else if (searchType == 2) {
                 $.ajax({
-                    url: "searchHeight",
+                    url: "searchTokenHeight",
                     type: "POST",
                     cache: false,
                     data: {
-                        tokenAddress: $('#tokenList').val(),
-                        tracerAddress: $('#tracerAddress').val(),
+                        regTokens: regTokens,
                         fromBlock: $('#fromBlock').val(),
                         toBlock: $('#toBlock').val(),
                         to: $('#to').val(),
@@ -691,20 +718,20 @@
                     },
                     success: function(result) {
                         if (flagBlock2) {
-                            display(result);
-                            checkPoint = result.checkPoint;
-                            repeatQuery = setTimeout(function() { clickSearchBlock(2) }, 1500);
+                            display(result.totalResult);
+                            for (var i = 0; i < result.checkPoint.length; i++)
+                                checkPoint[i] = result.checkPoint[i];
+                            repeatQuery = setTimeout(function() { clickSearchBlock(2) }, 3000);
                         }
                     }
                 });
             } else {
                 $.ajax({
-                    url: "searchHeight",
+                    url: "searchTokenHeight",
                     type: "POST",
                     cache: false,
                     data: {
-                        tokenAddress: $('#tokenList').val(),
-                        tracerAddress: $('#tracerAddress').val(),
+                        regTokens: regTokens,
                         fromBlock: $('#fromBlock').val(),
                         toBlock: $('#toBlock').val(),
                         searchType: 3,
@@ -712,9 +739,10 @@
                     },
                     success: function(result) {
                         if (flagBlock3) {
-                            display(result);
-                            checkPoint = result.checkPoint;
-                            repeatQuery = setTimeout(function() { clickSearchBlock(3) }, 1500);
+                            display(result.totalResult);
+                            for (var i = 0; i < result.checkPoint.length; i++)
+                                checkPoint[i] = result.checkPoint[i];
+                            repeatQuery = setTimeout(function() { clickSearchBlock(3) }, 3000);
                         }
                     }
                 });
@@ -724,12 +752,11 @@
         function clickSearchAccount(searchType) {
             if (searchType == 0) {
                 $.ajax({
-                    url: "searchAccount",
+                    url: "searchTokenAccount",
                     type: "POST",
                     cache: false,
                     data: {
-                        tokenAddress: $('#tokenList').val(),
-                        tracerAddress: $('#tracerAddress').val(),
+                        regTokens: regTokens,
                         from: $('#from').val(),
                         to: $('#to').val(),
                         searchType: 0,
@@ -737,53 +764,74 @@
                     },
                     success: function(result) {
                         if (flagAccount0) {
-                            display(result);
-                            checkPoint = result.checkPoint;
-                            repeatQuery = setTimeout(function() { clickSearchAccount(0) }, 1500);
+                            display(result.totalResult);
+                            for (var i = 0; i < result.checkPoint.length; i++)
+                                checkPoint[i] = result.checkPoint[i];
+                            repeatQuery = setTimeout(function() { clickSearchAccount(0) }, 3000);
                         }
                     }
                 });
             } else if (searchType == 1) {
                 $.ajax({
-                    url: "searchAccount",
+                    url: "searchTokenAccount",
                     type: "POST",
                     cache: false,
                     data: {
-                        tokenAddress: $('#tokenList').val(),
-                        tracerAddress: $('#tracerAddress').val(),
+                        regTokens: regTokens,
                         from: $('#from').val(),
                         searchType: 1,
                         checkPoint: checkPoint
                     },
                     success: function(result) {
                         if (flagAccount1) {
-                            display(result);
-                            checkPoint = result.checkPoint;
-                            repeatQuery = setTimeout(function() { clickSearchAccount(1) }, 1500);
+                            display(result.totalResult);
+                            for (var i = 0; i < result.checkPoint.length; i++)
+                                checkPoint[i] = result.checkPoint[i];
+                            repeatQuery = setTimeout(function() { clickSearchAccount(1) }, 3000);
                         }
                     }
                 });
             } else {
                 $.ajax({
-                    url: "searchAccount",
+                    url: "searchTokenAccount",
                     type: "POST",
                     cache: false,
                     data: {
-                        tokenAddress: $('#tokenList').val(),
-                        tracerAddress: $('#tracerAddress').val(),
+                        regTokens: regTokens,
                         to: $('#to').val(),
                         searchType: 2,
                         checkPoint: checkPoint
                     },
                     success: function(result) {
                         if (flagAccount2) {
-                            display(result);
-                            checkPoint = result.checkPoint;
-                            repeatQuery = setTimeout(function() { clickSearchAccount(2) }, 1500);
+                            display(result.totalResult);
+                            for (var i = 0; i < result.checkPoint.length; i++)
+                                checkPoint[i] = result.checkPoint[i];
+                            repeatQuery = setTimeout(function() { clickSearchAccount(2) }, 3000);
                         }
                     }
                 });
             }
+        }
+
+        function clickSearchToken() {
+            $.ajax({
+                url: "searchToken",
+                type: "POST",
+                cache: false,
+                data: {
+                    checkPoint: checkPoint,
+                    regTokens: regTokens
+                },
+                success: function(result) {
+                    if (flagToken) {
+                        display(result.totalResult);
+                        for (var i = 0; i < result.checkPoint.length; i++)
+                            checkPoint[i] = result.checkPoint[i];
+                        repeatQuery = setTimeout(function() { clickSearchToken() }, 3000);
+                    }
+                }
+            });
         }
 
         function display(result) {

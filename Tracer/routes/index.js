@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Web3 = require('web3');
-const web3 = new Web3('http://54.188.34.51:8545');
+const web3 = new Web3('http://locahostl:8545');
 const ctContract = require('../contract/tracerCT.json');
 const tracerContract = require('../contract/tokenTracer.json');
 const ctAddress = "0x7CC98282b890aB49DE4Ee00019d2F60C4972A49A";
@@ -35,6 +35,7 @@ router.post('/getTokenInfo', async function(req, res, next) {
         from: nowAccount
     });
     res.send({
+        tokenAddress: req.body.tokenAddress,
         tokenName: tokenName,
         tokenDecimal: tokenDecimal
     });
@@ -264,9 +265,250 @@ router.post('/searchAllToken', async function(req, res, next) {
 
         let tr = new web3.eth.Contract(tracerContract.abi);
         tr.options.address = web3.utils.toChecksumAddress(web3.utils.toChecksumAddress(tracer));
-        var result = await tr.methods.token_query(req.body.checkPoint).call({
+        var result = await tr.methods.token_query(req.body.checkPoint[i]).call({
             from: nowAccount
         });
+        _checkPoint.push(result[0]);
+        for (var j = 0; j < result[1].length; j++) {
+            var r = new Array();
+            r[0] = result[5][j]; // block
+            r[1] = result[1][j]; // Txn
+            r[2] = result[2][j]; // from
+            r[3] = result[3][j]; // to
+            r[4] = result[4][j]; // quantity
+            r[5] = result[6][j]; // timestamp
+            r[6] = decimal;
+            r[7] = tokenName;
+            _totalResult.push(r);
+        }
+    }
+
+    _totalResult = _totalResult.sort(function(x, y) {
+        if (x[0] === y[0]) {
+            return 0;
+        } else {
+            return (x[0] < y[0]) ? -1 : 1;
+        }
+    });
+
+    res.send({
+        checkPoint: _checkPoint,
+        totalResult: _totalResult
+    });
+});
+router.post('/searchToken', async function(req, res, next) {
+    let ct = new web3.eth.Contract(ctContract.abi);
+    ct.options.address = ctAddress;
+    var _checkPoint = [];
+    var _totalResult = [];
+    for (var i = 0; i < req.body.regTokens.length; i++) {
+        let tokenName = await ct.methods.tokenName(web3.utils.toChecksumAddress(req.body.regTokens[i])).call({
+            from: nowAccount
+        });
+        let decimal = await ct.methods.tokenDecimal(web3.utils.toChecksumAddress(req.body.regTokens[i])).call({
+            from: nowAccount
+        });
+
+        let tracer = await ct.methods.tokenTracers(web3.utils.toChecksumAddress(req.body.regTokens[i])).call({
+            from: nowAccount
+        });
+
+        let tr = new web3.eth.Contract(tracerContract.abi);
+        tr.options.address = web3.utils.toChecksumAddress(web3.utils.toChecksumAddress(tracer));
+        var result = await tr.methods.token_query(req.body.checkPoint[i]).call({
+            from: nowAccount
+        });
+        _checkPoint.push(result[0]);
+        for (var j = 0; j < result[1].length; j++) {
+            var r = new Array();
+            r[0] = result[5][j]; // block
+            r[1] = result[1][j]; // Txn
+            r[2] = result[2][j]; // from
+            r[3] = result[3][j]; // to
+            r[4] = result[4][j]; // quantity
+            r[5] = result[6][j]; // timestamp
+            r[6] = decimal;
+            r[7] = tokenName;
+            _totalResult.push(r);
+        }
+    }
+
+    _totalResult = _totalResult.sort(function(x, y) {
+        if (x[0] === y[0]) {
+            return 0;
+        } else {
+            return (x[0] < y[0]) ? -1 : 1;
+        }
+    });
+
+    res.send({
+        checkPoint: _checkPoint,
+        totalResult: _totalResult
+    });
+});
+router.post('/searchTokenDate', async function(req, res, next) {
+    let ct = new web3.eth.Contract(ctContract.abi);
+    ct.options.address = ctAddress;
+    var _checkPoint = [];
+    var _totalResult = [];
+    for (var i = 0; i < req.body.regTokens.length; i++) {
+        let tokenName = await ct.methods.tokenName(web3.utils.toChecksumAddress(req.body.regTokens[i])).call({
+            from: nowAccount
+        });
+        let decimal = await ct.methods.tokenDecimal(web3.utils.toChecksumAddress(req.body.regTokens[i])).call({
+            from: nowAccount
+        });
+
+        let tracer = await ct.methods.tokenTracers(web3.utils.toChecksumAddress(req.body.regTokens[i])).call({
+            from: nowAccount
+        });
+
+        let tr = new web3.eth.Contract(tracerContract.abi);
+        tr.options.address = web3.utils.toChecksumAddress(web3.utils.toChecksumAddress(tracer));
+        var result;
+        if (req.body.searchType == '0') {
+            result = await tr.methods.token_queryTime(req.body.fromDate, req.body.toDate, web3.utils.toChecksumAddress(req.body.from), web3.utils.toChecksumAddress(req.body.to), req.body.checkPoint[i]).call({
+                from: nowAccount
+            });
+        } else if (req.body.searchType == '1') {
+            result = await tr.methods.token_queryTime(req.body.fromDate, req.body.toDate, web3.utils.toChecksumAddress(req.body.from), nowAccount, req.body.checkPoint[i]).call({
+                from: nowAccount
+            });
+        } else if (req.body.searchType == '2') {
+            result = await tr.methods.token_queryTime(req.body.fromDate, req.body.toDate, nowAccount, web3.utils.toChecksumAddress(req.body.to), req.body.checkPoint[i]).call({
+                from: nowAccount
+            });
+        } else {
+            result = await tr.methods.token_queryTime(req.body.fromDate, req.body.toDate, nowAccount, nowAccount, req.body.checkPoint[i]).call({
+                from: nowAccount
+            });
+        }
+        _checkPoint.push(result[0]);
+        for (var j = 0; j < result[1].length; j++) {
+            var r = new Array();
+            r[0] = result[5][j]; // block
+            r[1] = result[1][j]; // Txn
+            r[2] = result[2][j]; // from
+            r[3] = result[3][j]; // to
+            r[4] = result[4][j]; // quantity
+            r[5] = result[6][j]; // timestamp
+            r[6] = decimal;
+            r[7] = tokenName;
+            _totalResult.push(r);
+        }
+    }
+
+    _totalResult = _totalResult.sort(function(x, y) {
+        if (x[0] === y[0]) {
+            return 0;
+        } else {
+            return (x[0] < y[0]) ? -1 : 1;
+        }
+    });
+
+    res.send({
+        checkPoint: _checkPoint,
+        totalResult: _totalResult
+    });
+});
+router.post('/searchTokenHeight', async function(req, res, next) {
+    let ct = new web3.eth.Contract(ctContract.abi);
+    ct.options.address = ctAddress;
+    var _checkPoint = [];
+    var _totalResult = [];
+    for (var i = 0; i < req.body.regTokens.length; i++) {
+        let tokenName = await ct.methods.tokenName(web3.utils.toChecksumAddress(req.body.regTokens[i])).call({
+            from: nowAccount
+        });
+        let decimal = await ct.methods.tokenDecimal(web3.utils.toChecksumAddress(req.body.regTokens[i])).call({
+            from: nowAccount
+        });
+
+        let tracer = await ct.methods.tokenTracers(web3.utils.toChecksumAddress(req.body.regTokens[i])).call({
+            from: nowAccount
+        });
+
+        let tr = new web3.eth.Contract(tracerContract.abi);
+        tr.options.address = web3.utils.toChecksumAddress(web3.utils.toChecksumAddress(tracer));
+        var result;
+        if (req.body.searchType == '0') {
+            result = await tr.methods.token_queryBlock(req.body.fromBlock, req.body.toBlock, web3.utils.toChecksumAddress(req.body.from), web3.utils.toChecksumAddress(req.body.to), req.body.checkPoint).call({
+                from: nowAccount
+            });
+        } else if (req.body.searchType == '1') {
+            result = await tr.methods.token_queryBlock(req.body.fromBlock, req.body.toBlock, web3.utils.toChecksumAddress(req.body.from), nowAccount, req.body.checkPoint).call({
+                from: nowAccount
+            });
+        } else if (req.body.searchType == '2') {
+            result = await tr.methods.token_queryBlock(req.body.fromBlock, req.body.toBlock, nowAccount, web3.utils.toChecksumAddress(req.body.to), req.body.checkPoint).call({
+                from: nowAccount
+            });
+        } else {
+            result = await tr.methods.token_queryBlock(req.body.fromBlock, req.body.toBlock, nowAccount, nowAccount, req.body.checkPoint).call({
+                from: nowAccount
+            });
+        }
+        _checkPoint.push(result[0]);
+        for (var j = 0; j < result[1].length; j++) {
+            var r = new Array();
+            r[0] = result[5][j]; // block
+            r[1] = result[1][j]; // Txn
+            r[2] = result[2][j]; // from
+            r[3] = result[3][j]; // to
+            r[4] = result[4][j]; // quantity
+            r[5] = result[6][j]; // timestamp
+            r[6] = decimal;
+            r[7] = tokenName;
+            _totalResult.push(r);
+        }
+    }
+
+    _totalResult = _totalResult.sort(function(x, y) {
+        if (x[0] === y[0]) {
+            return 0;
+        } else {
+            return (x[0] < y[0]) ? -1 : 1;
+        }
+    });
+
+    res.send({
+        checkPoint: _checkPoint,
+        totalResult: _totalResult
+    });
+});
+router.post('/searchTokenAccount', async function(req, res, next) {
+    let ct = new web3.eth.Contract(ctContract.abi);
+    ct.options.address = ctAddress;
+    var _checkPoint = [];
+    var _totalResult = [];
+    for (var i = 0; i < req.body.regTokens.length; i++) {
+        let tokenName = await ct.methods.tokenName(web3.utils.toChecksumAddress(req.body.regTokens[i])).call({
+            from: nowAccount
+        });
+        let decimal = await ct.methods.tokenDecimal(web3.utils.toChecksumAddress(req.body.regTokens[i])).call({
+            from: nowAccount
+        });
+
+        let tracer = await ct.methods.tokenTracers(web3.utils.toChecksumAddress(req.body.regTokens[i])).call({
+            from: nowAccount
+        });
+
+        let tr = new web3.eth.Contract(tracerContract.abi);
+        tr.options.address = web3.utils.toChecksumAddress(web3.utils.toChecksumAddress(tracer));
+        var result;
+        if (req.body.searchType == '0') {
+            result = await tr.methods.token_queryAccount(web3.utils.toChecksumAddress(req.body.from), web3.utils.toChecksumAddress(req.body.to), req.body.checkPoint).call({
+                from: nowAccount
+            });
+        } else if (req.body.searchType == '1') {
+            result = await tr.methods.token_queryAccount(web3.utils.toChecksumAddress(req.body.from), nowAccount, req.body.checkPoint).call({
+                from: nowAccount
+            });
+        } else {
+            result = await tr.methods.token_queryAccount(nowAccount, web3.utils.toChecksumAddress(req.body.to), req.body.checkPoint).call({
+                from: nowAccount
+            });
+        }
         _checkPoint.push(result[0]);
         for (var j = 0; j < result[1].length; j++) {
             var r = new Array();
