@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Web3 = require('web3');
-const web3 = new Web3('http://locahostl:8545');
+const web3 = new Web3('http://localhost:8545');
 const ctContract = require('../contract/tracerCT.json');
 const tracerContract = require('../contract/tokenTracer.json');
 const ctAddress = "0xE268a4edB30ebef756d73092b08d7A1ef4240Dac";
