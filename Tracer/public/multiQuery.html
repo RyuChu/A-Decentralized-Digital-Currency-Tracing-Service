@@ -167,14 +167,14 @@
             $('#toDate').val('');
             $('#from').val('');
             $('#to').val('');
+            $(".tokenFilter").each(function() {
+                this.checked = true;
+            });
 
             $('#searchButton').prop('disabled', false);
 
             clearTimeout(repeatQuery);
 
-            $(':checkbox:checked').each(function(i) {
-                $(this).prop("checked", true);
-            })
             regTokens = [];
             $(':checkbox:checked').each(function(i) {
                 regTokens[i] = $(this).val();
@@ -205,10 +205,6 @@
         $('#searchButton').click(function() {
             $('#searchButton').prop('disabled', true);
 
-            clickSearchBtn();
-        })
-
-        function clickSearchBtn() {
             clearTimeout(repeatQuery);
 
             clearFlag();
@@ -222,6 +218,10 @@
             checkPoint = [];
             checkPoint = Array(regTokens.length).fill(0);
 
+            clickSearchBtn();
+        })
+
+        function clickSearchBtn() {
             $.ajax({
                 url: "searchAllToken",
                 type: "POST",
@@ -269,6 +269,7 @@
                             $('#to').val('');
                         }
                         clearFlag();
+                        flagToken = false;
                         filterButton();
                         $(this).dialog("close");
                     }
@@ -327,6 +328,7 @@
                             $('#to').val('');
                         }
                         clearFlag();
+                        flagToken = false;
                         filterButton();
                         $(this).dialog("close");
                     }
@@ -376,6 +378,7 @@
                 text: 'filter',
                 click: function() {
                     clearFlag();
+                    flagToken = false;
                     filterButton();
                     $(this).dialog("close");
                 }
@@ -412,6 +415,7 @@
                 text: 'filter',
                 click: function() {
                     clearFlag();
+                    flagToken = false;
                     filterButton();
                     $(this).dialog("close");
                 }
@@ -460,9 +464,9 @@
             }, {
                 text: 'clear',
                 click: function() {
-                    $(':checkbox:checked').each(function(i) {
-                        $(this).prop("checked", true);
-                    })
+                    $(".tokenFilter").each(function() {
+                        this.checked = true;
+                    });
                 }
             }],
             open: function(event, ui) {
@@ -497,14 +501,14 @@
         function filterButton() {
             if ($('#toDate').val() != "" && $('#toBlok').val() != null) {
                 alert('You can only do one range query of block / date. Please check the query input again!');
-            } else if (flagToken) {
+            } else if (flagToken && !forDate && !forBlock && !flagAccount0 && !flagAccount1 && !flagAccount2) {
+            // } else if (flagToken) {
                 alert(1);
                 resetQueryAction();
 
                 flagToken = true;
                 clickSearchToken();
             } else {
-                alert(2);
                 if ($('#fromDate').val() != "" && $('#toDate').val() != "") {
                     if ((new Date($('#fromDate').val()).getTime()) <= (new Date($('#toDate').val()).getTime())) {
                         forDate = true;

@@ -432,19 +432,19 @@ router.post('/searchTokenHeight', async function(req, res, next) {
         tr.options.address = web3.utils.toChecksumAddress(web3.utils.toChecksumAddress(tracer));
         var result;
         if (req.body.searchType == '0') {
-            result = await tr.methods.token_queryBlock(req.body.fromBlock, req.body.toBlock, web3.utils.toChecksumAddress(req.body.from), web3.utils.toChecksumAddress(req.body.to), req.body.checkPoint).call({
+            result = await tr.methods.token_queryBlock(req.body.fromBlock, req.body.toBlock, web3.utils.toChecksumAddress(req.body.from), web3.utils.toChecksumAddress(req.body.to), req.body.checkPoint[i]).call({
                 from: nowAccount
             });
         } else if (req.body.searchType == '1') {
-            result = await tr.methods.token_queryBlock(req.body.fromBlock, req.body.toBlock, web3.utils.toChecksumAddress(req.body.from), nowAccount, req.body.checkPoint).call({
+            result = await tr.methods.token_queryBlock(req.body.fromBlock, req.body.toBlock, web3.utils.toChecksumAddress(req.body.from), nowAccount, req.body.checkPoint[i]).call({
                 from: nowAccount
             });
         } else if (req.body.searchType == '2') {
-            result = await tr.methods.token_queryBlock(req.body.fromBlock, req.body.toBlock, nowAccount, web3.utils.toChecksumAddress(req.body.to), req.body.checkPoint).call({
+            result = await tr.methods.token_queryBlock(req.body.fromBlock, req.body.toBlock, nowAccount, web3.utils.toChecksumAddress(req.body.to), req.body.checkPoint[i]).call({
                 from: nowAccount
             });
         } else {
-            result = await tr.methods.token_queryBlock(req.body.fromBlock, req.body.toBlock, nowAccount, nowAccount, req.body.checkPoint).call({
+            result = await tr.methods.token_queryBlock(req.body.fromBlock, req.body.toBlock, nowAccount, nowAccount, req.body.checkPoint[i]).call({
                 from: nowAccount
             });
         }
@@ -497,15 +497,15 @@ router.post('/searchTokenAccount', async function(req, res, next) {
         tr.options.address = web3.utils.toChecksumAddress(web3.utils.toChecksumAddress(tracer));
         var result;
         if (req.body.searchType == '0') {
-            result = await tr.methods.token_queryAccount(web3.utils.toChecksumAddress(req.body.from), web3.utils.toChecksumAddress(req.body.to), req.body.checkPoint).call({
+            result = await tr.methods.token_queryAccount(web3.utils.toChecksumAddress(req.body.from), web3.utils.toChecksumAddress(req.body.to), req.body.checkPoint[i]).call({
                 from: nowAccount
             });
         } else if (req.body.searchType == '1') {
-            result = await tr.methods.token_queryAccount(web3.utils.toChecksumAddress(req.body.from), nowAccount, req.body.checkPoint).call({
+            result = await tr.methods.token_queryAccount(web3.utils.toChecksumAddress(req.body.from), nowAccount, req.body.checkPoint[i]).call({
                 from: nowAccount
             });
         } else {
-            result = await tr.methods.token_queryAccount(nowAccount, web3.utils.toChecksumAddress(req.body.to), req.body.checkPoint).call({
+            result = await tr.methods.token_queryAccount(nowAccount, web3.utils.toChecksumAddress(req.body.to), req.body.checkPoint[i]).call({
                 from: nowAccount
             });
         }
