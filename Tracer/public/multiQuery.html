@@ -66,12 +66,18 @@
                             <p>toBlock : <input type="number" class="dialog_input" id="toBlock" min="0" placeholder="Default: latest" /></p>
                         </div>
                     </li>
-                    <li>Date Time
+                    <li id="row_date">Date Time
                         <img src="stylesheets/query/img/search.png" class="search-icon" id="queryStartTime">
                         <div class="dialog" id="date_dialog">
                             <h3>Please pick up the date to query</h3>
                             <p>fromDate : <input type="text" class="dialog_input" id="fromDate" placeholder="Default: Jul 30 2015" readonly /></p>
                             <p>toDate : <input type="text" class="dialog_input" id="toDate" placeholder="Default: latest" readonly /></p>
+                        </div>
+                        <img src="stylesheets/query/img/clock.png" class="search-icon" id="queryAge">
+                        <div class="dialog" id="age_dialog">
+                            <h3>Please choose the Tx age to query</h3>
+                            <input type="range" min="1" max="720" value="1" id="ageSelect">
+                            <p>Age : <span id="ageValue"></span> minutes before.</p>
                         </div>
                     </li>
                     <li>From
@@ -140,6 +146,7 @@
             flagAccount1 = false,
             flagAccount2 = false;
         var flagToken = false;
+        var action = 0;
 
         $.get('/getTokens', function(tokens) {
             for (var token of tokens) {
@@ -160,6 +167,10 @@
         function clear() {
             $('.result').remove();
             $('.section_table').hide();
+
+            $('#queryFromBlock').prop('disabled', false);
+            $('#queryStartTime').prop('disabled', false);
+            $('#queryAge').prop('disabled', false);
 
             $('#fromBlock').val('0');
             $('#toBlock').val('');
@@ -200,6 +211,7 @@
             flagAccount1 = false;
             flagAccount2 = false;
             flagToken = false;
+            action = 0;
         }
 
         $('#searchButton').click(function() {
@@ -244,8 +256,11 @@
             forDate = false;
 
         $('#queryFromBlock').click(function(e) {
-            $('#block_dialog').dialog('open');
-            e.preventDefault();
+            if (action != 2) {
+                action = 1;
+                $('#block_dialog').dialog('open');
+                e.preventDefault();
+            }
         })
 
         $('#block_dialog').dialog({
@@ -269,7 +284,6 @@
                             $('#to').val('');
                         }
                         clearFlag();
-                        flagToken = false;
                         filterButton();
                         $(this).dialog("close");
                     }
@@ -303,8 +317,11 @@
         var pickerFrom = datepicker('#fromDate');
         var pickerTo = datepicker('#toDate');
         $('#queryStartTime').click(function() {
-            $('#date_dialog').dialog('open');
-            e.preventDefault();
+            if (action != 2) {
+                action = 1;
+                $('#date_dialog').dialog('open');
+                e.preventDefault();
+            }
         })
 
         $('#date_dialog').dialog({
@@ -328,7 +345,6 @@
                             $('#to').val('');
                         }
                         clearFlag();
-                        flagToken = false;
                         filterButton();
                         $(this).dialog("close");
                     }
@@ -363,6 +379,63 @@
             }
         });
 
+        var slider = document.getElementById("ageSelect");
+        var output = document.getElementById("ageValue");
+        output.innerHTML = slider.value;
+        slider.oninput = function() {
+            output.innerHTML = this.value;
+        }
+
+        $('#queryAge').click(function() {
+            if (action != 1) {
+                action = 2;
+                $('#age_dialog').dialog('open');
+                e.preventDefault();
+            }
+        })
+
+        $('#age_dialog').dialog({
+            width: 360,
+            autoOpen: false,
+            modal: true,
+            resizable: false,
+            draggable: false,
+            buttons: [{
+                text: 'filter',
+                click: function() {
+                    // var t = new Date().getTime();
+                    // alert(timeStamp2String(t/1000));
+                    // alert(timeStamp2String(t/1000 - 180));
+                    clearFlag();
+                    filterAgeButton();
+                    $(this).dialog("close");
+                }
+            }, {
+                text: 'clear',
+                click: function() {
+                    $('#ageSelect').val('1');
+                    output.innerHTML = $('#ageSelect').val();
+                }
+            }],
+            open: function(event, ui) {
+                $('.ui-widget-overlay').bind('click', function() {
+                    $("#age_dialog").dialog('close');
+
+                    $('#ageSelect').val('1');
+                    output.innerHTML = $('#ageSelect').val();
+                });
+            },
+            close: function(event, ui) {
+                $('#ageSelect').val('1');
+                output.innerHTML = $('#ageSelect').val();
+            },
+            position: {
+                my: 'center',
+                at: 'center',
+                of: $('#queryAge')
+            }
+        });
+
         $('#querySender').click(function(e) {
             $('#from_dialog').dialog('open');
             e.preventDefault();
@@ -378,7 +451,6 @@
                 text: 'filter',
                 click: function() {
                     clearFlag();
-                    flagToken = false;
                     filterButton();
                     $(this).dialog("close");
                 }
@@ -415,7 +487,6 @@
                 text: 'filter',
                 click: function() {
                     clearFlag();
-                    flagToken = false;
                     filterButton();
                     $(this).dialog("close");
                 }
@@ -457,7 +528,6 @@
                     $(':checkbox:checked').each(function(i) {
                         regTokens[i] = $(this).val();
                     })
-                    flagToken = true;
                     filterButton();
                     $(this).dialog("close");
                 }
@@ -501,9 +571,8 @@
         function filterButton() {
             if ($('#toDate').val() != "" && $('#toBlok').val() != null) {
                 alert('You can only do one range query of block / date. Please check the query input again!');
-            } else if (flagToken && !forDate && !forBlock && !flagAccount0 && !flagAccount1 && !flagAccount2) {
-            // } else if (flagToken) {
-                alert(1);
+            } else if (!flagToken && !forDate && !forBlock && !flagAccount0 && !flagAccount1 && !flagAccount2) {
+                // } else if (flagToken) {
                 resetQueryAction();
 
                 flagToken = true;
@@ -565,6 +634,38 @@
                         flagAccount2 = true;
                         clickSearchAccount(2);
                     }
+                }
+            }
+        }
+
+        function filterAgeButton() {
+            if (!flagToken && !flagAccount0 && !flagAccount1 && !flagAccount2) {
+            // } else if (flagToken) {
+                resetQueryAction();
+
+                flagToken = true;
+                clickSearchToken();
+            } else {
+                forDate = true;
+                forBlock = false;
+                resetQueryAction();
+
+                var time = new Date().getTime()
+                $('#fromDate').val(timeStamp2String(time / 1000) - slider.value);
+                $('#toDate').val(timeStamp2String(time / 1000));
+
+                if ($('#from').val() != "" && $('#to').val() != "") {
+                    flagDate0 = true;
+                    clickSearchDate(0);
+                } else if ($('#from').val() != "") {
+                    flagDate1 = true;
+                    clickSearchDate(1);
+                } else if ($('#to').val() != "") {
+                    flagDate2 = true;
+                    clickSearchDate(2);
+                } else {
+                    flagDate3 = true;
+                    clickSearchDate(3);
                 }
             }
         }

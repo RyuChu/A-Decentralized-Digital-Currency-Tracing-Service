@@ -40,6 +40,16 @@
     box-sizing: border-box;
 }
 
+#row_date {
+    width: 15%;
+}
+
+#ageSelect {
+    position: relative;
+    padding: 15px; 
+    width: 320px;
+}
+
 @media only screen and (max-width: 767px) and (min-width: 480px) {
     ._row ul li {
         font-size: 13px;
