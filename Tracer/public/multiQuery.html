@@ -639,34 +639,28 @@
         }
 
         function filterAgeButton() {
-            if (!flagToken && !flagAccount0 && !flagAccount1 && !flagAccount2) {
-            // } else if (flagToken) {
-                resetQueryAction();
+            forDate = true;
+            forBlock = false;
+            resetQueryAction();
 
-                flagToken = true;
-                clickSearchToken();
+            var time = new Date().getTime()
+            alert(timeStamp2String(time / 1000 - slider.value * 60));
+            alert(timeStamp2String(time / 1000));
+            $('#fromDate').val(timeStamp2String(time / 1000 - slider.value * 60));
+            $('#toDate').val(timeStamp2String(time / 1000));
+
+            if ($('#from').val() != "" && $('#to').val() != "") {
+                flagDate0 = true;
+                clickSearchDate(0);
+            } else if ($('#from').val() != "") {
+                flagDate1 = true;
+                clickSearchDate(1);
+            } else if ($('#to').val() != "") {
+                flagDate2 = true;
+                clickSearchDate(2);
             } else {
-                forDate = true;
-                forBlock = false;
-                resetQueryAction();
-
-                var time = new Date().getTime()
-                $('#fromDate').val(timeStamp2String(time / 1000) - slider.value);
-                $('#toDate').val(timeStamp2String(time / 1000));
-
-                if ($('#from').val() != "" && $('#to').val() != "") {
-                    flagDate0 = true;
-                    clickSearchDate(0);
-                } else if ($('#from').val() != "") {
-                    flagDate1 = true;
-                    clickSearchDate(1);
-                } else if ($('#to').val() != "") {
-                    flagDate2 = true;
-                    clickSearchDate(2);
-                } else {
-                    flagDate3 = true;
-                    clickSearchDate(3);
-                }
+                flagDate3 = true;
+                clickSearchDate(3);
             }
         }
 
